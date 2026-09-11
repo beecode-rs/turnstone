@@ -1,0 +1,151 @@
+subject: binaryPreviewUtil
+module: ./binary-preview-util.ts
+subjectType: function
+methods:
+  classify:
+    terms:
+      - params:
+          - fileName: photo.png
+        result: image
+      - params:
+          - fileName: /remote/dir/LOGO.PNG
+        result: image
+      - params:
+          - fileName: shot.jpeg
+        result: image
+      - params:
+          - fileName: anim.gif
+        result: image
+      - params:
+          - fileName: pic.webp
+        result: image
+      - params:
+          - fileName: tile.bmp
+        result: image
+      - params:
+          - fileName: favicon.ico
+        result: icon
+      - params:
+          - fileName: document.pdf
+        result: pdf
+      - params:
+          - fileName: icon.svg
+        result: svg
+      - params:
+          - fileName: icon.svg
+            isSvgPreviewDisabled: true
+        result: unsupported
+      - params:
+          - fileName: icon.SVG
+            isSvgPreviewDisabled: true
+        result: unsupported
+      - params:
+          - fileName: main.ts
+        result: unsupported
+      - params:
+          - fileName: .gitignore
+        result: unsupported
+      - params:
+          - fileName: no-extension
+        result: unsupported
+      - params:
+          - fileName: ''
+        result: unsupported
+  isBase64ConcatSafe:
+    terms:
+      - params:
+          - byteLength: 0
+        result: true
+      - params:
+          - byteLength: 3
+        result: true
+      - params:
+          - byteLength: 1572864
+        result: true
+      - params:
+          - byteLength: 1
+        result: false
+      - params:
+          - byteLength: 131072
+        result: false
+  resolveAspect:
+    terms:
+      - params:
+          - sourceHeight: 1080
+            sourceWidth: 1920
+        result: 1.7777777777777777
+      - params:
+          - sourceHeight: 800
+            sourceWidth: 600
+        result: 0.75
+      - params:
+          - sourceHeight: 1
+            sourceWidth: 1
+        result: 1
+      - params:
+          - sourceHeight: 1080
+        result: 1.3333333333333333
+      - params:
+          - sourceWidth: 0
+            sourceHeight: 100
+        result: 1.3333333333333333
+      - params:
+          - sourceWidth: -10
+            sourceHeight: 100
+        result: 1.3333333333333333
+  resolveCapState:
+    terms:
+      - params:
+          - size: 0
+        result: true
+      - params:
+          - size: 33554432
+        result: true
+      - params:
+          - size: 33554433
+        result: false
+  toDataUri:
+    terms:
+      - params:
+          - base64: aGVsbG8=
+            mimeType: image/png
+        result: 'data:image/png;base64,aGVsbG8='
+      - params:
+          - base64: AAABAAEAEBA
+            mimeType: image/svg+xml
+        result: 'data:image/svg+xml;base64,AAABAAEAEBA'
+  toMimeType:
+    terms:
+      - params:
+          - fileName: photo.png
+        result: image/png
+      - params:
+          - fileName: photo.jpg
+        result: image/jpeg
+      - params:
+          - fileName: /remote/dir/PHOTO.JPEG
+        result: image/jpeg
+      - params:
+          - fileName: anim.gif
+        result: image/gif
+      - params:
+          - fileName: pic.webp
+        result: image/webp
+      - params:
+          - fileName: tile.bmp
+        result: image/bmp
+      - params:
+          - fileName: icon.svg
+        result: image/svg+xml
+      - params:
+          - fileName: favicon.ico
+        result: image/x-icon
+      - params:
+          - fileName: document.pdf
+        result: application/pdf
+      - params:
+          - fileName: main.ts
+        result: null
+      - params:
+          - fileName: .gitignore
+        result: null

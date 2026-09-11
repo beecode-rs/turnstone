@@ -1,0 +1,36 @@
+subject: fileSizeUtil
+module: ./file-size-util.ts
+subjectType: function
+methods:
+  format:
+    terms:
+      - params:
+          - bytes: 0
+        result: '0 B'
+      - params:
+          - bytes: 512
+        result: '512 B'
+      - params:
+          - bytes: 1023
+        result: '1023 B'
+      - params:
+          - bytes: 1024
+        result: '1.0 KB'
+      - params:
+          - bytes: 1536
+        result: '1.5 KB'
+      - params:
+          - bytes: 65536
+        result: '64.0 KB'
+      - params:
+          - bytes: 1048576
+        result: '1.0 MB'
+      - params:
+          - bytes: 1572864
+        result: '1.5 MB'
+      - params:
+          - bytes: 2097152
+        result: '2.0 MB'
+      - params:
+          - bytes: 1073741824
+        result: '1.0 GB'

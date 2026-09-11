@@ -1,0 +1,364 @@
+subject: markdownTaskListUtil
+module: ./markdown-task-list-util.ts
+subjectType: function
+methods:
+  applyTaskMarkers:
+    terms:
+      - params:
+          - tokens: []
+        result: []
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: '[ ] plain task'
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: [[data-task-checked, 'false']]
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: plain task
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: '[x] done task'
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: [[data-task-checked, 'true']]
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: done task
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: '[X] upper case marker'
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: [[data-task-checked, 'true']]
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: upper case marker
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: plain item without marker
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: null
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: plain item without marker
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: '[ ]label without space'
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: null
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: '[ ]label without space'
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: '[ ]'
+                  - type: strong_open
+                    nesting: 1
+                  - type: text
+                    nesting: 0
+                    content: bold suffix
+                  - type: strong_close
+                    nesting: -1
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: [[data-task-checked, 'false']]
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: ''
+              - type: strong_open
+                nesting: 1
+              - type: text
+                nesting: 0
+                content: bold suffix
+              - type: strong_close
+                nesting: -1
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: bullet_list_open
+                nesting: 1
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: '[ ] inner task'
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+              - type: bullet_list_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: null
+          - type: bullet_list_open
+            nesting: 1
+          - type: list_item_open
+            nesting: 1
+            attrs: [[data-task-checked, 'false']]
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: inner task
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+          - type: bullet_list_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: em_open
+                    nesting: 1
+                  - type: text
+                    nesting: 0
+                    content: '[ ] not the first child'
+                  - type: em_close
+                    nesting: -1
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: null
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: em_open
+                nesting: 1
+              - type: text
+                nesting: 0
+                content: '[ ] not the first child'
+              - type: em_close
+                nesting: -1
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+      - params:
+          - tokens:
+              - type: list_item_open
+                nesting: 1
+                attrs: null
+              - type: paragraph_open
+                nesting: 1
+              - type: inline
+                nesting: 0
+                children:
+                  - type: text
+                    nesting: 0
+                    content: marker in the middle [ ] of text
+              - type: paragraph_close
+                nesting: -1
+              - type: list_item_close
+                nesting: -1
+        result:
+          - type: list_item_open
+            nesting: 1
+            attrs: null
+          - type: paragraph_open
+            nesting: 1
+          - type: inline
+            nesting: 0
+            children:
+              - type: text
+                nesting: 0
+                content: marker in the middle [ ] of text
+          - type: paragraph_close
+            nesting: -1
+          - type: list_item_close
+            nesting: -1
+  resolveTaskState:
+    terms:
+      - params:
+          - node:
+              attributes: { data-task-checked: 'true' }
+        result: true
+      - params:
+          - node:
+              attributes: { data-task-checked: 'false' }
+        result: false
+      - params:
+          - node:
+              attributes: {}
+        result: null
+      - params:
+          - node:
+              attributes: { class: task-list-item }
+        result: null

@@ -1,0 +1,42 @@
+subject: markdownLinkUtil
+module: ./markdown-link-util.ts
+subjectType: function
+methods:
+  resolveTarget:
+    terms:
+      - params:
+          - href: 'https://example.com/docs'
+            markdownPath: /var/www/README.md
+        result: { kind: external, url: 'https://example.com/docs' }
+      - params:
+          - href: 'mailto:user@example.com'
+            markdownPath: /var/www/README.md
+        result: { kind: external, url: 'mailto:user@example.com' }
+      - params:
+          - href: 'slack://channel/C123'
+            markdownPath: /var/www/README.md
+        result: { kind: external, url: 'slack://channel/C123' }
+      - params:
+          - href: notes.md
+            markdownPath: /var/www/docs/readme.md
+        result: { kind: file, path: /var/www/docs/notes.md }
+      - params:
+          - href: ../shared/api.md
+            markdownPath: /var/www/app/src/index.md
+        result: { kind: file, path: /var/www/app/shared/api.md }
+      - params:
+          - href: /docs/readme.md
+            markdownPath: /var/www/README.md
+        result: { kind: file, path: /docs/readme.md }
+      - params:
+          - href: '#installation'
+            markdownPath: /var/www/README.md
+        result: { kind: anchor }
+      - params:
+          - href: ''
+            markdownPath: /var/www/README.md
+        result: { kind: empty }
+      - params:
+          - href: '   '
+            markdownPath: /var/www/README.md
+        result: { kind: empty }

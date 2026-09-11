@@ -1,0 +1,50 @@
+subject: FontSizePreferenceService
+module: ./font-size-preference-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  parsePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - value: xs
+        result: xs
+      - constructorParams: []
+        params:
+          - value: s
+        result: s
+      - constructorParams: []
+        params:
+          - value: m
+        result: m
+      - constructorParams: []
+        params:
+          - value: l
+        result: l
+      - constructorParams: []
+        params:
+          - value: xl
+        result: xl
+      - constructorParams: []
+        params:
+          - value: xxl
+        result: xxl
+      - constructorParams: []
+        params:
+          - value: null
+        result: m
+      - constructorParams: []
+        params:
+          - value: ''
+        result: m
+      - constructorParams: []
+        params:
+          - value: M
+        result: m
+      - constructorParams: []
+        params:
+          - value: giant
+        result: m

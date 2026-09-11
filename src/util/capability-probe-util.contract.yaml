@@ -1,0 +1,62 @@
+subject: capabilityProbeUtil
+module: ./capability-probe-util.ts
+subjectType: function
+methods:
+  parseProbeLines:
+    terms:
+      - params:
+          - lines: ['/usr/bin/rg', '/usr/bin/inotifywait', 'git version 2.43.0', Linux]
+        result:
+          gitVersion: 2.43.0
+          isInotifyAvailable: true
+          isRipgrepAvailable: true
+          platform: linux
+      - params:
+          - lines: [Linux]
+        result:
+          gitVersion: null
+          isInotifyAvailable: false
+          isRipgrepAvailable: false
+          platform: linux
+      - params:
+          - lines: ['/usr/local/bin/rg', 'git version 2.39.5', Linux]
+        result:
+          gitVersion: 2.39.5
+          isInotifyAvailable: false
+          isRipgrepAvailable: true
+          platform: linux
+      - params:
+          - lines: ['/usr/bin/inotifywait', 'git version 2.43.0', Linux]
+        result:
+          gitVersion: 2.43.0
+          isInotifyAvailable: true
+          isRipgrepAvailable: false
+          platform: linux
+      - params:
+          - lines: ['/opt/homebrew/bin/rg', 'git version 2.43.0', Darwin]
+        result:
+          gitVersion: 2.43.0
+          isInotifyAvailable: false
+          isRipgrepAvailable: true
+          platform: darwin
+      - params:
+          - lines: [rg, inotifywait, 'git version 2.43.0', Linux]
+        result:
+          gitVersion: 2.43.0
+          isInotifyAvailable: true
+          isRipgrepAvailable: true
+          platform: linux
+      - params:
+          - lines: [FreeBSD]
+        result:
+          gitVersion: null
+          isInotifyAvailable: false
+          isRipgrepAvailable: false
+          platform: other
+      - params:
+          - lines: []
+        result:
+          gitVersion: null
+          isInotifyAvailable: false
+          isRipgrepAvailable: false
+          platform: other

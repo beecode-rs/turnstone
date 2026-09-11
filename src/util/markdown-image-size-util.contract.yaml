@@ -1,0 +1,69 @@
+subject: markdownImageSizeUtil
+module: ./markdown-image-size-util.ts
+subjectType: function
+methods:
+  resolveAttrWidth:
+    terms:
+      - params:
+          - widthAttr: null
+        result: null
+      - params:
+          - widthAttr: '100'
+        result: 100
+      - params:
+          - widthAttr: '0'
+        result: 0
+      - params:
+          - widthAttr: '50%'
+        result: null
+      - params:
+          - widthAttr: '12.5'
+        result: null
+      - params:
+          - widthAttr: 'auto'
+        result: null
+      - params:
+          - widthAttr: ''
+        result: null
+  resolveTargetWidth:
+    terms:
+      - params:
+          - attrWidth: 120
+            maxWidth: 400
+            sourceSize:
+              height: 20
+              width: 98
+        result: 120
+      - params:
+          - attrWidth: 600
+            maxWidth: 400
+            sourceSize:
+              height: 20
+              width: 98
+        result: 400
+      - params:
+          - attrWidth: null
+            maxWidth: 400
+            sourceSize:
+              height: 20
+              width: 98
+        result: 98
+      - params:
+          - attrWidth: null
+            maxWidth: 90
+            sourceSize:
+              height: 20
+              width: 98
+        result: 90
+      - params:
+          - attrWidth: null
+            maxWidth: 400
+            sourceSize:
+              height: 20
+              width: 0
+        result: 400
+      - params:
+          - attrWidth: null
+            maxWidth: 400
+            sourceSize: null
+        result: 400

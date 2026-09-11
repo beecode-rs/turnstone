@@ -1,0 +1,26 @@
+subject: draftHostIdUtil
+module: ./draft-host-id-util.ts
+subjectType: function
+methods:
+  forConnection:
+    terms:
+      - params:
+          - host: 203.0.113.10
+            port: 22
+            username: deploy
+        result: draft-e3301cec2d10e5b5b40746cbacbfba82cde50a20206d4d42569e393c14edb513
+      - params:
+          - host: 203.0.113.10
+            port: 2222
+            username: deploy
+        result: draft-eea1a5d1637deb01d1238c2a77b590da63291aac4b48c00f509ec123cf98b117
+      - params:
+          - host: 203.0.113.10
+            port: 22
+            username: root
+        result: draft-34297f7be173b2bbf11de80b266d32098791a0042165809731c27fc612f66f07
+      - params:
+          - host: ''
+            port: 0
+            username: ''
+        result: draft-a349fbea49f420270af15ed37ca10b23638c2587c7f85d13a02e6314eb1f7575

@@ -1,0 +1,21 @@
+subject: shellQuoteUtil
+module: ./shell-quote-util.ts
+subjectType: function
+methods:
+  quoteShellWord:
+    terms:
+      - params:
+          - word: TODO
+        result: "'TODO'"
+      - params:
+          - word: ''
+        result: "''"
+      - params:
+          - word: it's
+        result: "'it'\\''s'"
+      - params:
+          - word: '$(rm -rf /)'
+        result: "'$(rm -rf /)'"
+      - params:
+          - word: 'a b'
+        result: "'a b'"

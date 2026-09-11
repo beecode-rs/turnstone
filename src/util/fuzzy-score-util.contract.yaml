@@ -1,0 +1,64 @@
+subject: fuzzyScoreUtil
+module: ./fuzzy-score-util.ts
+subjectType: function
+methods:
+  score:
+    terms:
+      - params:
+          - query: abc
+            target: abc
+        result: 1023
+      - params:
+          - query: ABC
+            target: abc
+        result: 1023
+      - params:
+          - query: srv
+            target: /srv/app/main.ts
+        result: 23
+      - params:
+          - query: ac
+            target: abc
+        result: 2
+      - params:
+          - query: bc
+            target: abc
+        result: 12
+      - params:
+          - query: abd
+            target: abc
+        result: null
+      - params:
+          - query: abcd
+            target: abc
+        result: null
+      - params:
+          - query: ''
+            target: abc
+        result: null
+  matchIndices:
+    terms:
+      - params:
+          - query: abc
+            target: abc
+        result: [0, 1, 2]
+      - params:
+          - query: ABC
+            target: abc
+        result: [0, 1, 2]
+      - params:
+          - query: srv
+            target: /srv/app/main.ts
+        result: [1, 2, 3]
+      - params:
+          - query: mt
+            target: main.ts
+        result: [0, 5]
+      - params:
+          - query: abd
+            target: abc
+        result: []
+      - params:
+          - query: ''
+            target: abc
+        result: []

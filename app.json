@@ -1,0 +1,63 @@
+{
+	"expo": {
+		"android": {
+			"adaptiveIcon": {
+				"backgroundColor": "#000c2f",
+				"foregroundImage": "./assets/images/adaptive-icon.png"
+			},
+			"package": "com.turnstoneapp",
+			"predictiveBackGestureEnabled": false,
+			"versionCode": 1
+		},
+		"experiments": {
+			"reactCompiler": true,
+			"typedRoutes": true
+		},
+		"extra": {
+			"beecodeTeamId": ""
+		},
+		"icon": "./assets/images/icon.png",
+		"ios": {
+			"buildNumber": "0.1.0",
+			"bundleIdentifier": "com.turnstoneapp.ios",
+			"entitlements": {
+				"keychain-access-groups": [
+					"$(AppIdentifierPrefix)com.beecode.devicekeys"
+				]
+			}
+		},
+		"name": "Turnstone",
+		"orientation": "default",
+		"plugins": [
+			"./plugins/with-app-name.ts",
+			"./plugins/with-apk-name.ts",
+			"./plugins/with-build-config.ts",
+			"./plugins/with-display-cutout.ts",
+			"./plugins/with-gradle-wrapper.ts",
+			"./plugins/with-proguard-optimize.ts",
+			"./plugins/with-standalone-kotlin.ts",
+			"expo-router",
+			[
+				"expo-splash-screen",
+				{
+					"backgroundColor": "#000c2f",
+					"image": "./assets/images/splash.png",
+					"imageWidth": 578
+				}
+			],
+			"expo-secure-store",
+			"expo-asset",
+			"expo-font",
+			"expo-image",
+			"expo-web-browser"
+		],
+		"scheme": "turnstone",
+		"slug": "turnstone",
+		"userInterfaceStyle": "automatic",
+		"version": "0.1.0",
+		"web": {
+			"favicon": "./assets/images/favicon.png",
+			"output": "single"
+		}
+	}
+}

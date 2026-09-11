@@ -1,0 +1,258 @@
+subject: treeReconcileUtil
+module: ./tree-reconcile-util.ts
+subjectType: function
+methods:
+  isPollingActive:
+    terms:
+      - params:
+          - isAppForegrounded: true
+            isScreenFocused: true
+        result: true
+      - params:
+          - isAppForegrounded: true
+            isScreenFocused: false
+        result: false
+      - params:
+          - isAppForegrounded: false
+            isScreenFocused: true
+        result: false
+      - params:
+          - isAppForegrounded: false
+            isScreenFocused: false
+        result: false
+  parseInotifyLine:
+    terms:
+      - params:
+          - line: "CLOSE_WRITE,CLOSE\t/srv/app/src/main.ts"
+        result:
+          events: [CLOSE_WRITE, CLOSE]
+          path: /srv/app/src/main.ts
+      - params:
+          - line: "CREATE,ISDIR\t/srv/app/src"
+        result:
+          events: [CREATE, ISDIR]
+          path: /srv/app/src
+      - params:
+          - line: "MOVED_FROM\t/srv/app/old.txt"
+        result:
+          events: [MOVED_FROM]
+          path: /srv/app/old.txt
+      - params:
+          - line: MOVED_FROM /srv/app/old.txt
+        result: null
+      - params:
+          - line: "\t/srv/app"
+        result: null
+      - params:
+          - line: "CREATE\t"
+        result: null
+  reconcileChildren:
+    terms:
+      - params:
+          - after: []
+            before: []
+        result:
+          added: []
+          removed: []
+          renamed: []
+      - params:
+          - after:
+              - isDir: false
+                mtime: 12
+                name: beta.ts
+                size: 6
+              - isDir: false
+                mtime: 10
+                name: alpha.ts
+                size: 5
+            before:
+              - isDir: false
+                mtime: 10
+                name: alpha.ts
+                size: 5
+              - isDir: false
+                mtime: 12
+                name: beta.ts
+                size: 6
+        result:
+          added: []
+          removed: []
+          renamed: []
+      - params:
+          - after:
+              - isDir: false
+                mtime: 10
+                name: alpha.ts
+                size: 5
+              - isDir: false
+                mtime: 12
+                name: beta.ts
+                size: 6
+            before:
+              - isDir: false
+                mtime: 10
+                name: alpha.ts
+                size: 5
+        result:
+          added:
+            - isDir: false
+              mtime: 12
+              name: beta.ts
+              size: 6
+          removed: []
+          renamed: []
+      - params:
+          - after:
+              - isDir: false
+                mtime: 10
+                name: alpha.ts
+                size: 5
+            before:
+              - isDir: false
+                mtime: 10
+                name: alpha.ts
+                size: 5
+              - isDir: false
+                mtime: 12
+                name: beta.ts
+                size: 6
+        result:
+          added: []
+          removed:
+            - isDir: false
+              mtime: 12
+              name: beta.ts
+              size: 6
+          renamed: []
+      - params:
+          - after:
+              - isDir: false
+                mtime: 100
+                name: new.ts
+                size: 42
+            before:
+              - isDir: false
+                mtime: 100
+                name: old.ts
+                size: 42
+        result:
+          added: []
+          removed: []
+          renamed:
+            - from:
+                isDir: false
+                mtime: 100
+                name: old.ts
+                size: 42
+              to:
+                isDir: false
+                mtime: 100
+                name: new.ts
+                size: 42
+      - params:
+          - after:
+              - isDir: false
+                mtime: 100
+                name: new.ts
+                size: 43
+            before:
+              - isDir: false
+                mtime: 100
+                name: old.ts
+                size: 42
+        result:
+          added:
+            - isDir: false
+              mtime: 100
+              name: new.ts
+              size: 43
+          removed:
+            - isDir: false
+              mtime: 100
+              name: old.ts
+              size: 42
+          renamed: []
+      - params:
+          - after:
+              - isDir: true
+                mtime: 7
+                name: newdir
+                size: 0
+            before:
+              - isDir: true
+                mtime: 7
+                name: olddir
+                size: 0
+        result:
+          added: []
+          removed: []
+          renamed:
+            - from:
+                isDir: true
+                mtime: 7
+                name: olddir
+                size: 0
+              to:
+                isDir: true
+                mtime: 7
+                name: newdir
+                size: 0
+      - params:
+          - after:
+              - isDir: false
+                mtime: 10
+                name: b.ts
+                size: 1
+              - isDir: false
+                mtime: 5
+                name: keep.md
+                size: 9
+              - isDir: true
+                mtime: 3
+                name: newdir
+                size: 0
+              - isDir: false
+                mtime: 8
+                name: extra.py
+                size: 2
+            before:
+              - isDir: false
+                mtime: 10
+                name: a.ts
+                size: 1
+              - isDir: false
+                mtime: 5
+                name: keep.md
+                size: 9
+              - isDir: true
+                mtime: 3
+                name: gonedir
+                size: 0
+        result:
+          added:
+            - isDir: false
+              mtime: 8
+              name: extra.py
+              size: 2
+          removed: []
+          renamed:
+            - from:
+                isDir: false
+                mtime: 10
+                name: a.ts
+                size: 1
+              to:
+                isDir: false
+                mtime: 10
+                name: b.ts
+                size: 1
+            - from:
+                isDir: true
+                mtime: 3
+                name: gonedir
+                size: 0
+              to:
+                isDir: true
+                mtime: 3
+                name: newdir
+                size: 0

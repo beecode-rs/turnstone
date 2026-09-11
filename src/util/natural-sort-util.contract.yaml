@@ -1,0 +1,30 @@
+subject: naturalSortUtil
+module: ./natural-sort-util.ts
+subjectType: function
+methods:
+  compare:
+    terms:
+      - params: ['apple', 'banana']
+        result: -1
+      - params: ['banana', 'Apple']
+        result: 1
+      - params: ['ABC', 'abc']
+        result: 0
+      - params: ['', 'a']
+        result: -1
+      - params: ['same', 'same']
+        result: 0
+      - params: ['file2', 'file10']
+        result: -1
+      - params: ['file10', 'file2']
+        result: 1
+      - params: ['a1b2', 'a1b10']
+        result: -1
+      - params: ['v1.2.10', 'v1.2.2']
+        result: 1
+      - params: ['FILE2', 'file10']
+        result: -1
+      - params: ['item', 'item1']
+        result: -1
+      - params: ['file02', 'file2']
+        result: -1

@@ -1,0 +1,76 @@
+subject: lineSplitUtil
+module: ./line-split-util.ts
+subjectType: function
+methods:
+  flushLines:
+    terms:
+      - params:
+          - pendingTail: []
+        result:
+          lines: []
+      - params:
+          - pendingTail: [104, 105]
+        result:
+          lines:
+            - [104, 105]
+      - params:
+          - pendingTail: [195, 169]
+        result:
+          lines:
+            - [195, 169]
+  splitChunk:
+    terms:
+      - params:
+          - chunk: [104, 105, 10]
+            pendingTail: []
+        result:
+          lines:
+            - [104, 105]
+          pendingTail: []
+      - params:
+          - chunk: [104, 105, 195]
+            pendingTail: []
+        result:
+          lines: []
+          pendingTail: [104, 105, 195]
+      - params:
+          - chunk: [169, 10]
+            pendingTail: [104, 105, 195]
+        result:
+          lines:
+            - [104, 105, 195, 169]
+          pendingTail: []
+      - params:
+          - chunk: []
+            pendingTail: [104]
+        result:
+          lines: []
+          pendingTail: [104]
+      - params:
+          - chunk: [97, 10, 98, 10]
+            pendingTail: []
+        result:
+          lines:
+            - [97]
+            - [98]
+          pendingTail: []
+      - params:
+          - chunk: [97, 10, 98]
+            pendingTail: []
+        result:
+          lines:
+            - [97]
+          pendingTail: [98]
+      - params:
+          - chunk: [230, 188]
+            pendingTail: []
+        result:
+          lines: []
+          pendingTail: [230, 188]
+      - params:
+          - chunk: [162, 10, 99]
+            pendingTail: [230, 188]
+        result:
+          lines:
+            - [230, 188, 162]
+          pendingTail: [99]

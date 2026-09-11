@@ -1,0 +1,52 @@
+subject: RemoteExecService
+module: ./remote-exec-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  buildCommand:
+    terms:
+      - constructorParams: []
+        params:
+          - command: uname -s
+        result: |-
+          LC_ALL=C sh -c 'command -v timeout >/dev/null 2>&1 && exec timeout 15 sh -c '\''uname -s | head -c 1048576'\'' || exec sh -c '\''uname -s | head -c 1048576'\'''
+      - constructorParams: []
+        params:
+          - command: "rg --json -- 'TODO' /srv/project"
+        result: |-
+          LC_ALL=C sh -c 'command -v timeout >/dev/null 2>&1 && exec timeout 15 sh -c '\''rg --json -- '\''\'\'''\''TODO'\''\'\'''\'' /srv/project | head -c 1048576'\'' || exec sh -c '\''rg --json -- '\''\'\'''\''TODO'\''\'\'''\'' /srv/project | head -c 1048576'\'''
+      - constructorParams: []
+        params:
+          - command: "git -C '/srv/my repo' status --porcelain=v2 --branch"
+        result: |-
+          LC_ALL=C sh -c 'command -v timeout >/dev/null 2>&1 && exec timeout 15 sh -c '\''git -C '\''\'\'''\''/srv/my repo'\''\'\'''\'' status --porcelain=v2 --branch | head -c 1048576'\'' || exec sh -c '\''git -C '\''\'\'''\''/srv/my repo'\''\'\'''\'' status --porcelain=v2 --branch | head -c 1048576'\'''
+      - constructorParams: []
+        params:
+          - command: ''
+        result: |-
+          LC_ALL=C sh -c 'command -v timeout >/dev/null 2>&1 && exec timeout 15 sh -c '\'' | head -c 1048576'\'' || exec sh -c '\'' | head -c 1048576'\'''
+  quoteShellWord:
+    terms:
+      - constructorParams: []
+        params:
+          - word: simple
+        result: "'simple'"
+      - constructorParams: []
+        params:
+          - word: ''
+        result: "''"
+      - constructorParams: []
+        params:
+          - word: it's
+        result: "'it'\\''s'"
+      - constructorParams: []
+        params:
+          - word: '$(rm -rf /)'
+        result: "'$(rm -rf /)'"
+      - constructorParams: []
+        params:
+          - word: 'a b'
+        result: "'a b'"

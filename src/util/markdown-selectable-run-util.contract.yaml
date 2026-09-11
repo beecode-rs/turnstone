@@ -1,0 +1,127 @@
+subject: markdownSelectableRunUtil
+module: ./markdown-selectable-run-util.ts
+subjectType: function
+methods:
+  groupBlocksBySelectableRun:
+    terms:
+      - params:
+          - blocks: []
+        result: []
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: paragraph
+        result:
+          - blockIndexes: [0]
+            kind: selectable-run
+      - params:
+          - blocks:
+              - isSelectableRunSafe: false
+                type: paragraph
+        result:
+          - blockIndex: 0
+            kind: standalone-block
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: fence
+        result:
+          - blockIndex: 0
+            kind: standalone-block
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: heading1
+              - isSelectableRunSafe: true
+                type: paragraph
+              - isSelectableRunSafe: true
+                type: paragraph
+        result:
+          - blockIndexes: [0, 1, 2]
+            kind: selectable-run
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: heading1
+              - isSelectableRunSafe: true
+                type: heading2
+              - isSelectableRunSafe: true
+                type: heading3
+              - isSelectableRunSafe: true
+                type: heading4
+              - isSelectableRunSafe: true
+                type: heading5
+              - isSelectableRunSafe: true
+                type: heading6
+              - isSelectableRunSafe: true
+                type: paragraph
+        result:
+          - blockIndexes: [0, 1, 2, 3, 4, 5, 6]
+            kind: selectable-run
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: heading1
+              - isSelectableRunSafe: true
+                type: fence
+              - isSelectableRunSafe: true
+                type: paragraph
+              - isSelectableRunSafe: true
+                type: bullet_list
+              - isSelectableRunSafe: true
+                type: heading2
+        result:
+          - blockIndexes: [0]
+            kind: selectable-run
+          - blockIndex: 1
+            kind: standalone-block
+          - blockIndexes: [2]
+            kind: selectable-run
+          - blockIndex: 3
+            kind: standalone-block
+          - blockIndexes: [4]
+            kind: selectable-run
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: paragraph
+              - isSelectableRunSafe: false
+                type: paragraph
+              - isSelectableRunSafe: true
+                type: paragraph
+        result:
+          - blockIndexes: [0]
+            kind: selectable-run
+          - blockIndex: 1
+            kind: standalone-block
+          - blockIndexes: [2]
+            kind: selectable-run
+      - params:
+          - blocks:
+              - isSelectableRunSafe: false
+                type: heading1
+              - isSelectableRunSafe: true
+                type: paragraph
+        result:
+          - blockIndex: 0
+            kind: standalone-block
+          - blockIndexes: [1]
+            kind: selectable-run
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: fence
+              - isSelectableRunSafe: true
+                type: html_block
+        result:
+          - blockIndex: 0
+            kind: standalone-block
+          - blockIndex: 1
+            kind: standalone-block
+      - params:
+          - blocks:
+              - isSelectableRunSafe: true
+                type: unknown_block_type
+        result:
+          - blockIndex: 0
+            kind: standalone-block

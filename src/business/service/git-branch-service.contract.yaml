@@ -1,0 +1,69 @@
+subject: GitBranchService
+module: ./git-branch-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params:
+        - {}
+      result: {}
+methods:
+  _toBranch:
+    terms:
+      # successful rev-parse yields the branch name
+      - constructorParams:
+          - {}
+        params:
+          - execResult:
+              exitCode: 0
+              isCancelled: false
+            outputLines:
+              - main
+        result: main
+      # non-repo directory exits non-zero and yields no branch
+      - constructorParams:
+          - {}
+        params:
+          - execResult:
+              exitCode: 128
+              isCancelled: false
+            outputLines: []
+        result: null
+      # cancelled exec never completed
+      - constructorParams:
+          - {}
+        params:
+          - execResult:
+              exitCode: 0
+              isCancelled: true
+            outputLines:
+              - main
+        result: null
+      # incomplete exec has a null exit code
+      - constructorParams:
+          - {}
+        params:
+          - execResult:
+              exitCode: null
+              isCancelled: false
+            outputLines: []
+        result: null
+      # blank output line is treated as no branch
+      - constructorParams:
+          - {}
+        params:
+          - execResult:
+              exitCode: 0
+              isCancelled: false
+            outputLines:
+              - ''
+        result: null
+      # surrounding whitespace is trimmed off the branch name
+      - constructorParams:
+          - {}
+        params:
+          - execResult:
+              exitCode: 0
+              isCancelled: false
+            outputLines:
+              - ' feature/x '
+        result: feature/x

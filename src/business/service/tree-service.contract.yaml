@@ -1,0 +1,295 @@
+subject: TreeService
+module: ./tree-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  compareEntries:
+    terms:
+      - constructorParams: []
+        params:
+          - left:
+              isDir: true
+              mtime: 10
+              name: zeta
+              size: 0
+            right:
+              isDir: false
+              mtime: 10
+              name: alpha
+              size: 5
+        result: -1
+      - constructorParams: []
+        params:
+          - left:
+              isDir: false
+              mtime: 1
+              name: alpha
+              size: 5
+            right:
+              isDir: true
+              mtime: 1
+              name: zeta
+              size: 0
+        result: 1
+      - constructorParams: []
+        params:
+          - left:
+              isDir: true
+              mtime: 1
+              name: file10
+              size: 0
+            right:
+              isDir: true
+              mtime: 1
+              name: file2
+              size: 0
+        result: 1
+      - constructorParams: []
+        params:
+          - left:
+              isDir: false
+              mtime: 1
+              name: file2
+              size: 1
+            right:
+              isDir: false
+              mtime: 2
+              name: file10
+              size: 2
+        result: -1
+      - constructorParams: []
+        params:
+          - left:
+              isDir: false
+              mtime: 1
+              name: Readme
+              size: 1
+            right:
+              isDir: false
+              mtime: 1
+              name: readme
+              size: 1
+        result: 0
+  sortEntries:
+    terms:
+      - constructorParams: []
+        params:
+          - entries: []
+        result: []
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 3
+                name: file10
+                size: 30
+              - isDir: true
+                mtime: 2
+                name: beta
+                size: 0
+              - isDir: true
+                mtime: 1
+                name: Alpha
+                size: 0
+              - isDir: false
+                mtime: 1
+                name: file2
+                size: 3
+        result:
+          - isDir: true
+            mtime: 1
+            name: Alpha
+            size: 0
+          - isDir: true
+            mtime: 2
+            name: beta
+            size: 0
+          - isDir: false
+            mtime: 1
+            name: file2
+            size: 3
+          - isDir: false
+            mtime: 3
+            name: file10
+            size: 30
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: same
+                size: 2
+              - isDir: false
+                mtime: 2
+                name: same
+                size: 1
+        result:
+          - isDir: false
+            mtime: 1
+            name: same
+            size: 2
+          - isDir: false
+            mtime: 2
+            name: same
+            size: 1
+  paginate:
+    terms:
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: b
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: c
+                size: 1
+            limit: 2
+            offset: 0
+        result:
+          - isDir: false
+            mtime: 1
+            name: a
+            size: 1
+          - isDir: false
+            mtime: 1
+            name: b
+            size: 1
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: b
+                size: 1
+            limit: 2
+            offset: 1
+        result:
+          - isDir: false
+            mtime: 1
+            name: b
+            size: 1
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: b
+                size: 1
+            offset: 5
+        result: []
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: true
+                mtime: 1
+                name: a
+                size: 0
+            offset: 0
+        result:
+          - isDir: true
+            mtime: 1
+            name: a
+            size: 0
+  toSubdirectoryNames:
+    terms:
+      - constructorParams: []
+        params:
+          - entries: []
+        result: []
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: true
+                mtime: 1
+                name: Alpha
+                size: 0
+              - isDir: false
+                mtime: 1
+                name: notes.md
+                size: 128
+              - isDir: true
+                mtime: 2
+                name: beta
+                size: 0
+              - isDir: false
+                mtime: 3
+                name: file10
+                size: 30
+        result:
+          - Alpha
+          - beta
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a.txt
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: b.txt
+                size: 1
+        result: []
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: dir10
+                size: 1
+              - isDir: true
+                mtime: 1
+                name: Alpha
+                size: 0
+              - isDir: true
+                mtime: 1
+                name: dir10
+                size: 0
+        result:
+          - Alpha
+          - dir10
+  toTreeEntry:
+    terms:
+      - constructorParams: []
+        params:
+          - entry:
+              filename: src
+              isDirectory: true
+              isSymbolicLink: false
+              modifiedAtSeconds: 1700000000
+              size: 4096
+        result:
+          isDir: true
+          mtime: 1700000000
+          name: src
+          size: 4096
+      - constructorParams: []
+        params:
+          - entry:
+              filename: notes.md
+              isDirectory: false
+              isSymbolicLink: false
+              modifiedAtSeconds: 0
+              size: 128
+        result:
+          isDir: false
+          mtime: 0
+          name: notes.md
+          size: 128

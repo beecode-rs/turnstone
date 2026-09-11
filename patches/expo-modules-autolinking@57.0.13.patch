@@ -1,0 +1,35 @@
+diff --git a/android/expo-gradle-plugin/build.gradle.kts b/android/expo-gradle-plugin/build.gradle.kts
+index ced05f1ede41908cee1e353dffd4cbf7c5a51e97..e3ea16d855bb9b0f737b893fb8c28e3e03b6da58 100644
+--- a/android/expo-gradle-plugin/build.gradle.kts
++++ b/android/expo-gradle-plugin/build.gradle.kts
+@@ -1,4 +1,4 @@
+ plugins {
+-  kotlin("jvm") version "2.1.20" apply false
++  kotlin("jvm") version "2.2.0" apply false
+   id("java-gradle-plugin")
+ }
+diff --git a/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/ExpoAutolinkingPlugin.kt b/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/ExpoAutolinkingPlugin.kt
+index 702910510628e345070254f09ab8ef97c76ff11d..406c46a8bf090d730028c1b26d68f91384025a41 100644
+--- a/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/ExpoAutolinkingPlugin.kt
++++ b/android/expo-gradle-plugin/expo-autolinking-plugin/src/main/kotlin/expo/modules/plugin/ExpoAutolinkingPlugin.kt
+@@ -87,12 +87,14 @@ open class ExpoAutolinkingPlugin : Plugin<Project> {
+       .dependsOn(generatePackagesList)
+ 
+     // Adds the generated file to the source set.
+-    project.extensions.getByType(AndroidComponentsExtension::class.java).finalizeDsl { ext ->
+-      ext
+-        .sourceSets
+-        .getByName("main")
+-        .java
+-        .srcDirs(getPackageListDir(project), getInlineModulesDir(project))
++    project.extensions.getByType(AndroidComponentsExtension::class.java).onVariants { variant ->
++      @Suppress("UnstableApiUsage")
++      val kotlinSource = requireNotNull(variant.sources.kotlin) { "Can't access kotlin source sets" }
++
++      with(kotlinSource) {
++        addStaticSourceDirectory(getPackageListDir(project).get().asFile.absolutePath)
++        addStaticSourceDirectory(getInlineModulesDir(project).get().asFile.absolutePath)
++      }
+     }
+   }
+ 

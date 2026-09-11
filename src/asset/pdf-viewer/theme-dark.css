@@ -1,0 +1,7 @@
+body.theme-dark {
+  --ts-pdf-placeholder-color: #8b949e;
+}
+
+body.theme-dark .ts-pdf-page {
+  border: 1px solid #30363d;
+}

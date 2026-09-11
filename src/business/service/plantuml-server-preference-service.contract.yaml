@@ -1,0 +1,103 @@
+subject: PlantumlServerPreferenceService
+module: ./plantuml-server-preference-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  parsePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":"https://uml.example.com/plantuml","isCustomServerEnabled":true}'
+        result:
+          customServerUrl: https://uml.example.com/plantuml
+          isCustomServerEnabled: true
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":" https://uml.example.com/plantuml ","isCustomServerEnabled":false}'
+        result:
+          customServerUrl: https://uml.example.com/plantuml
+          isCustomServerEnabled: false
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":"https://uml.example.com/plantuml","isCustomServerEnabled":true,"isSelfSignedCertificateIgnored":true}'
+        result:
+          customServerUrl: https://uml.example.com/plantuml
+          isCustomServerEnabled: true
+          isSelfSignedCertificateIgnored: true
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":"https://uml.example.com/plantuml","isCustomServerEnabled":true,"isSelfSignedCertificateIgnored":"yes"}'
+        result:
+          customServerUrl: https://uml.example.com/plantuml
+          isCustomServerEnabled: true
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: null
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: false
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: not-json
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: false
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":"","isCustomServerEnabled":true}'
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: true
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":"ftp://uml.example.com","isCustomServerEnabled":true}'
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: true
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":"https://uml.example.com/plantuml","isCustomServerEnabled":"yes"}'
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: false
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"customServerUrl":123,"isCustomServerEnabled":true}'
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: false
+          isSelfSignedCertificateIgnored: false
+      - constructorParams: []
+        params:
+          - value: '{"isCustomServerEnabled":true}'
+        result:
+          customServerUrl: https://www.plantuml.com/plantuml
+          isCustomServerEnabled: false
+          isSelfSignedCertificateIgnored: false
+  serializePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - preference:
+              customServerUrl: https://www.plantuml.com/plantuml
+              isCustomServerEnabled: false
+              isSelfSignedCertificateIgnored: false
+        result: '{"customServerUrl":"https://www.plantuml.com/plantuml","isCustomServerEnabled":false,"isSelfSignedCertificateIgnored":false}'
+      - constructorParams: []
+        params:
+          - preference:
+              customServerUrl: https://uml.example.com/plantuml
+              isCustomServerEnabled: true
+              isSelfSignedCertificateIgnored: true
+        result: '{"customServerUrl":"https://uml.example.com/plantuml","isCustomServerEnabled":true,"isSelfSignedCertificateIgnored":true}'

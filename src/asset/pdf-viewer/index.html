@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      #ts-pdf-frame {
+        padding: 8px 12px 16px;
+        width: 100%;
+      }
+      .ts-pdf-page {
+        background: #ffffff;
+        margin: 0 0 12px;
+        position: relative;
+        width: 100%;
+      }
+      .ts-pdf-page canvas {
+        display: block;
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+      .ts-pdf-placeholder {
+        color: var(--ts-pdf-placeholder-color, #6e7781);
+        font-family: sans-serif;
+        font-size: 13px;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        top: 45%;
+        width: 100%;
+      }
+      .ts-pdf-placeholder[data-hidden='1'] {
+        display: none;
+      }
+    </style>
+    <style id="ts-pdf-theme-dark">
+      /*__THEME_DARK__*/
+    </style>
+    <style id="ts-pdf-theme-light" disabled>
+      /*__THEME_LIGHT__*/
+    </style>
+  </head>
+  <body class="theme-dark">
+    <div id="ts-pdf-frame"></div>
+    <script>
+      /*__PDFJS_JS__*/
+    </script>
+    <script type="text/plain" id="ts-pdf-worker-src">
+      /*__PDFJS_WORKER__*/
+    </script>
+    <script>
+      ;(function () {
+        var frame = document.getElementById('ts-pdf-frame')
+        var state = {
+          buffer: null,
+          cursor: 0,
+          isWorkerInitialised: false,
+          pageCount: 0,
+          pdf: null,
+          theme: 'dark',
+        }
+
+        var postMessage = function (message) {
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(message))
+            return
+          }
+          if (window.parent !== window) {
+            window.parent.postMessage(message, '*')
+          }
+        }
+
+        var reportHeight = function () {
+          postMessage({ height: Math.ceil(frame.offsetHeight), type: 'content-height' })
+        }
+
+        var postError = function (error) {
+          postMessage({ message: String(error && error.message ? error.message : error), type: 'error' })
+        }
+
+        var initWorker = function () {
+          if (state.isWorkerInitialised || !window.pdfjsLib) {
+            return
+          }
+          state.isWorkerInitialised = true
+          try {
+            var workerSource = document.getElementById('ts-pdf-worker-src').textContent
+            var workerBlob = new Blob([workerSource], { type: 'application/javascript' })
+            window.pdfjsLib.GlobalWorkerOptions.workerPort = new Worker(URL.createObjectURL(workerBlob))
+          } catch (error) {
+            postError(error)
+          }
+        }
+
+        var applyTheme = function (theme) {
+          state.theme = theme
+          var isDark = theme === 'dark'
+          document.body.className = isDark ? 'theme-dark' : 'theme-light'
+          document.getElementById('ts-pdf-theme-dark').disabled = !isDark
+          document.getElementById('ts-pdf-theme-light').disabled = isDark
+        }
+
+        var destroyDocument = function () {
+          if (state.pdf) {
+            state.pdf.destroy()
+            state.pdf = null
+          }
+          state.pageCount = 0
+          frame.innerHTML = ''
+        }
+
+        var observePage = function (pageElement) {
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (!entry.isIntersecting) {
+                  return
+                }
+                observer.disconnect()
+                renderPage(pageElement)
+              })
+            },
+            { root: null, rootMargin: '150% 0px' }
+          )
+          observer.observe(pageElement)
+        }
+
+        var renderPage = function (pageElement) {
+          if (pageElement.getAttribute('data-rendered') === '1') {
+            return
+          }
+          pageElement.setAttribute('data-rendered', '1')
+          state.pdf
+            .getPage(Number(pageElement.getAttribute('data-page-number')))
+            .then(function (page) {
+              var baseViewport = page.getViewport({ scale: 1 })
+              var containerWidth = pageElement.clientWidth
+              var scale = containerWidth / baseViewport.width
+              var viewport = page.getViewport({ scale: scale })
+              var pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
+              var canvas = pageElement.querySelector('canvas')
+              canvas.width = Math.floor(viewport.width * pixelRatio)
+              canvas.height = Math.floor(viewport.height * pixelRatio)
+              var context = canvas.getContext('2d')
+              context.scale(pixelRatio, pixelRatio)
+              var placeholder = pageElement.querySelector('.ts-pdf-placeholder')
+              placeholder.setAttribute('data-hidden', '1')
+              page.render({ canvasContext: context, viewport: viewport })
+            })
+            .catch(function (error) {
+              postError(error)
+            })
+        }
+
+        var appendPageElement = function (pageNumber, viewport) {
+          var pageElement = document.createElement('div')
+          pageElement.className = 'ts-pdf-page'
+          pageElement.setAttribute('data-page-number', String(pageNumber))
+          pageElement.style.paddingTop = (viewport.height / viewport.width) * 100 + '%'
+          var canvas = document.createElement('canvas')
+          pageElement.appendChild(canvas)
+          var placeholder = document.createElement('div')
+          placeholder.className = 'ts-pdf-placeholder'
+          placeholder.textContent = String(pageNumber)
+          pageElement.appendChild(placeholder)
+          frame.appendChild(pageElement)
+          observePage(pageElement)
+        }
+
+        var buildPageElements = function (pdf, pageNumber) {
+          if (pageNumber > pdf.numPages) {
+            reportHeight()
+            return undefined
+          }
+          return pdf
+            .getPage(pageNumber)
+            .then(function (page) {
+              appendPageElement(pageNumber, page.getViewport({ scale: 1 }))
+              if (pageNumber % 5 === 0) {
+                reportHeight()
+              }
+              return new Promise(function (resolve) {
+                setTimeout(resolve, 0)
+              })
+            })
+            .then(function () {
+              return buildPageElements(pdf, pageNumber + 1)
+            })
+        }
+
+        var loadDocument = function () {
+          initWorker()
+          destroyDocument()
+          window.pdfjsLib
+            .getDocument({ data: state.buffer })
+            .promise.then(function (pdf) {
+              state.pdf = pdf
+              state.pageCount = pdf.numPages
+              postMessage({ pageCount: pdf.numPages, type: 'document-meta' })
+
+              return buildPageElements(pdf, 1)
+            })
+            .catch(function (error) {
+              postError(error)
+            })
+        }
+
+        var handleLoadBegin = function (message) {
+          destroyDocument()
+          state.buffer = new Uint8Array(message.byteLength)
+          state.cursor = 0
+        }
+
+        var handleLoadChunk = function (message) {
+          var binary = atob(message.base64)
+          for (var index = 0; index < binary.length; index += 1) {
+            state.buffer[state.cursor + index] = binary.charCodeAt(index)
+          }
+          state.cursor += binary.length
+        }
+
+        window.__turnstonePdfReceive = function (message) {
+          if (!message) {
+            return
+          }
+          try {
+            if (message.type === 'load-begin') {
+              handleLoadBegin(message)
+              return
+            }
+            if (message.type === 'load-chunk') {
+              handleLoadChunk(message)
+              return
+            }
+            if (message.type === 'load-end') {
+              loadDocument()
+              return
+            }
+            if (message.type === 'set-theme') {
+              applyTheme(message.theme)
+              return
+            }
+          } catch (error) {
+            postError(error)
+          }
+        }
+
+        window.addEventListener('message', function (event) {
+          if (window.__turnstonePdfReceive) {
+            window.__turnstonePdfReceive(event.data)
+          }
+        })
+
+        if (window.ResizeObserver) {
+          new ResizeObserver(reportHeight).observe(frame)
+        }
+      })()
+    </script>
+  </body>
+</html>

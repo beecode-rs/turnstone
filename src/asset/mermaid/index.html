@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      #ts-mermaid-frame {
+        width: 100%;
+      }
+      #ts-mermaid-frame svg {
+        display: block;
+        height: auto;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="ts-mermaid-frame"></div>
+    <script>
+      /*__MERMAID_JS__*/
+    </script>
+    <script>
+      ;(function () {
+        var frame = document.getElementById('ts-mermaid-frame')
+        var state = {
+          renderCount: 0,
+          source: '',
+          theme: 'default',
+        }
+
+        var postMessage = function (message) {
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(message))
+            return
+          }
+          if (window.parent !== window) {
+            window.parent.postMessage(message, '*')
+          }
+        }
+
+        var reportHeight = function () {
+          postMessage({ height: Math.ceil(frame.offsetHeight), type: 'content-height' })
+        }
+
+        var resolveThemeName = function (theme) {
+          return theme === 'dark' ? 'dark' : 'default'
+        }
+
+        var SVG_PX_PATTERN = /^\d+(\.\d+)?$/
+
+        var toSvgPxNumber = function (value) {
+          if (value === null || !SVG_PX_PATTERN.test(value.trim())) {
+            return null
+          }
+          var number = parseFloat(value)
+          if (isNaN(number) || number <= 0) {
+            return null
+          }
+
+          return number
+        }
+
+        var ensureViewBox = function (svg) {
+          if (svg.getAttribute('viewBox')) {
+            return
+          }
+          var width = toSvgPxNumber(svg.getAttribute('width'))
+          var height = toSvgPxNumber(svg.getAttribute('height'))
+          if (width === null || height === null) {
+            return
+          }
+          svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height)
+        }
+
+        var removeNode = function (id) {
+          var node = document.getElementById(id)
+          if (node && node.parentNode) {
+            node.parentNode.removeChild(node)
+          }
+        }
+
+        var resolveErrorMessage = function (error) {
+          if (error && error.message) {
+            return String(error.message)
+          }
+
+          return String(error)
+        }
+
+        var renderChain = Promise.resolve()
+
+        var renderDiagram = function () {
+          if (!window.mermaid) {
+            postMessage({ message: 'Mermaid bundle failed to load', type: 'error' })
+            return
+          }
+          state.renderCount += 1
+          var requestCount = state.renderCount
+          var renderId = 'ts-mermaid-' + requestCount
+          renderChain = renderChain
+            .then(function () {
+              window.mermaid.initialize({ startOnLoad: false, theme: state.theme })
+              return window.mermaid.render(renderId, state.source)
+            })
+            .then(function (result) {
+              removeNode(renderId)
+              removeNode('d' + renderId)
+              if (state.renderCount !== requestCount) {
+                return
+              }
+              frame.innerHTML = result.svg
+              var svg = frame.querySelector('svg')
+              if (svg) {
+                ensureViewBox(svg)
+                svg.removeAttribute('width')
+                svg.removeAttribute('height')
+              }
+              reportHeight()
+            })
+            .catch(function (error) {
+              removeNode(renderId)
+              removeNode('d' + renderId)
+              if (state.renderCount !== requestCount) {
+                return
+              }
+              frame.innerHTML = ''
+              postMessage({ message: resolveErrorMessage(error), type: 'error' })
+            })
+        }
+
+        window.__turnstoneMermaidReceive = function (message) {
+          if (!message) {
+            return
+          }
+          if (message.type === 'render') {
+            state.source = message.source
+            state.theme = resolveThemeName(message.theme)
+            renderDiagram()
+          }
+        }
+
+        window.addEventListener('message', function (event) {
+          if (window.__turnstoneMermaidReceive) {
+            window.__turnstoneMermaidReceive(event.data)
+          }
+        })
+
+        frame.addEventListener('click', function (event) {
+          var target = event.target
+          var anchor = target && target.closest ? target.closest('a') : null
+          if (anchor) {
+            event.preventDefault()
+          }
+        })
+
+        if (window.ResizeObserver) {
+          new ResizeObserver(reportHeight).observe(frame)
+        }
+      })()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,123 @@
+subject: gitDetectMemoUtil
+module: ./git-detect-memo-util.ts
+subjectType: function
+methods:
+  normalizePath:
+    terms:
+      - params: ['/']
+        result: '/'
+      - params: ['/a/b']
+        result: '/a/b'
+      - params: ['/home/user/']
+        result: '/home/user'
+      - params: ['/a/b///']
+        result: '/a/b'
+  parentPath:
+    terms:
+      - params: ['/']
+        result: null
+      - params: ['/a']
+        result: '/'
+      - params: ['/a/b/c']
+        result: '/a/b'
+      - params: ['/a/b/']
+        result: '/a'
+  buildKey:
+    terms:
+      - params:
+          - hostId: h1
+            path: /src/
+        result: 'h1#/src'
+      - params:
+          - hostId: h1
+            path: /src
+        result: 'h1#/src'
+      - params:
+          - hostId: h2
+            path: /src
+        result: 'h2#/src'
+  lookup:
+    terms:
+      - params:
+          - hostId: h1
+            path: /a
+            state: {}
+        result: null
+      - params:
+          - hostId: h1
+            path: /a
+            state:
+              'h1#/a':
+                status: not-repo
+        result:
+          status: not-repo
+      - params:
+          - hostId: h2
+            path: /a
+            state:
+              'h1#/a':
+                status: not-repo
+        result: null
+      - params:
+          - hostId: h1
+            path: /a
+            state:
+              'h1#/a':
+                gitDir: /a/.git
+                status: repo
+                toplevel: /a
+        result:
+          gitDir: /a/.git
+          status: repo
+          toplevel: /a
+  record:
+    terms:
+      - params:
+          - detection:
+              status: not-repo
+            hostId: h1
+            path: /a/b/c
+            state: {}
+        result:
+          'h1#/':
+            status: not-repo
+          'h1#/a':
+            status: not-repo
+          'h1#/a/b':
+            status: not-repo
+          'h1#/a/b/c':
+            status: not-repo
+      - params:
+          - detection:
+              gitDir: /r/.git
+              status: repo
+              toplevel: /r
+            hostId: h1
+            path: /r/src/
+            state:
+              'h1#/other':
+                status: not-repo
+        result:
+          'h1#/other':
+            status: not-repo
+          'h1#/r':
+            gitDir: /r/.git
+            status: repo
+            toplevel: /r
+          'h1#/r/src':
+            gitDir: /r/.git
+            status: repo
+            toplevel: /r
+      - params:
+          - detection:
+              gitDir: /r/.git
+              status: repo
+              toplevel: /r
+            hostId: h1
+            path: /r
+            state: {}
+        result:
+          'h1#/r':
+            gitDir: /r/.git
+            status: repo
+            toplevel: /r

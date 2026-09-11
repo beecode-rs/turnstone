@@ -1,0 +1,15 @@
+subject: authorizedKeyInstallUtil
+module: ./authorized-key-install-util.ts
+subjectType: function
+methods:
+  buildCommand:
+    terms:
+      - params:
+          - publicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123 turnstone-beecode@miloss-phone-android
+        result: 'umask 077 && mkdir -p "$HOME/.ssh" && touch "$HOME/.ssh/authorized_keys" && chmod 700 "$HOME/.ssh" && chmod 600 "$HOME/.ssh/authorized_keys" && { [ -z "$(tail -c1 "$HOME/.ssh/authorized_keys")" ] || echo >> "$HOME/.ssh/authorized_keys"; } && { grep -qF ''AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123'' "$HOME/.ssh/authorized_keys" || echo ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123 turnstone-beecode@miloss-phone-android'' >> "$HOME/.ssh/authorized_keys"; } && { command -v restorecon >/dev/null 2>&1 && restorecon -F "$HOME/.ssh" "$HOME/.ssh/authorized_keys" 2>/dev/null || true; }'
+      - params:
+          - publicKey: '  ssh-ed25519   AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123   some-name  '
+        result: 'umask 077 && mkdir -p "$HOME/.ssh" && touch "$HOME/.ssh/authorized_keys" && chmod 700 "$HOME/.ssh" && chmod 600 "$HOME/.ssh/authorized_keys" && { [ -z "$(tail -c1 "$HOME/.ssh/authorized_keys")" ] || echo >> "$HOME/.ssh/authorized_keys"; } && { grep -qF ''AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123'' "$HOME/.ssh/authorized_keys" || echo ''ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123 some-name'' >> "$HOME/.ssh/authorized_keys"; } && { command -v restorecon >/dev/null 2>&1 && restorecon -F "$HOME/.ssh" "$HOME/.ssh/authorized_keys" 2>/dev/null || true; }'
+      - params:
+          - publicKey: justoneblob
+        result: 'umask 077 && mkdir -p "$HOME/.ssh" && touch "$HOME/.ssh/authorized_keys" && chmod 700 "$HOME/.ssh" && chmod 600 "$HOME/.ssh/authorized_keys" && { [ -z "$(tail -c1 "$HOME/.ssh/authorized_keys")" ] || echo >> "$HOME/.ssh/authorized_keys"; } && { grep -qF ''justoneblob'' "$HOME/.ssh/authorized_keys" || echo ''justoneblob'' >> "$HOME/.ssh/authorized_keys"; } && { command -v restorecon >/dev/null 2>&1 && restorecon -F "$HOME/.ssh" "$HOME/.ssh/authorized_keys" 2>/dev/null || true; }'

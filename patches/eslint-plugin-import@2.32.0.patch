@@ -1,0 +1,36 @@
+diff --git a/lib/rules/order.js b/lib/rules/order.js
+index 578709bf0b90c1c794ed7f8c046d9b3edaf0ff0a..d1b00cf7091ff70f3177bf590a89fcc5b26cb37a 100644
+--- a/lib/rules/order.js
++++ b/lib/rules/order.js
+@@ -25,29 +25,11 @@ function reverse(array) {
+ }
+ 
+ function getTokensOrCommentsAfter(sourceCode, node, count) {
+-  var currentNodeOrToken = node;
+-  var result = [];
+-  for (var i = 0; i < count; i++) {
+-    currentNodeOrToken = sourceCode.getTokenOrCommentAfter(currentNodeOrToken);
+-    if (currentNodeOrToken == null) {
+-      break;
+-    }
+-    result.push(currentNodeOrToken);
+-  }
+-  return result;
++  return sourceCode.getTokensAfter(node, count, { includeComments: true });
+ }
+ 
+ function getTokensOrCommentsBefore(sourceCode, node, count) {
+-  var currentNodeOrToken = node;
+-  var result = [];
+-  for (var i = 0; i < count; i++) {
+-    currentNodeOrToken = sourceCode.getTokenOrCommentBefore(currentNodeOrToken);
+-    if (currentNodeOrToken == null) {
+-      break;
+-    }
+-    result.push(currentNodeOrToken);
+-  }
+-  return result.reverse();
++  return sourceCode.getTokensBefore(node, count, { includeComments: true }).reverse();
+ }
+ 
+ function takeTokensAfterWhile(sourceCode, node, condition) {

@@ -1,0 +1,72 @@
+subject: fileIconUtil
+module: ./file-icon-util.ts
+subjectType: function
+methods:
+  resolveFileIcon:
+    terms:
+      - params:
+          - isDir: false
+            name: package.json
+        result: nodejs
+      - params:
+          - isDir: false
+            name: PACKAGE.JSON
+        result: nodejs
+      - params:
+          - isDir: false
+            name: .gitignore
+        result: git
+      - params:
+          - isDir: false
+            name: .env
+        result: file
+      - params:
+          - isDir: false
+            name: main.ts
+        result: typescript
+      - params:
+          - isDir: false
+            name: App.tsx
+        result: react_ts
+      - params:
+          - isDir: false
+            name: build.schema.json
+        result: json_schema
+      - params:
+          - isDir: false
+            name: archive.tar.gz
+        result: zip
+      - params:
+          - isDir: false
+            name: Makefile
+        result: makefile
+      - params:
+          - isDir: false
+            name: zzqq-noext-123
+        result: file
+      - params:
+          - isDir: false
+            name: unknown.zzzx
+        result: file
+      - params:
+          - isDir: true
+            name: src
+        result: folder-src
+      - params:
+          - isExpanded: true
+            isDir: true
+            name: SRC
+        result: folder-src-open
+      - params:
+          - isDir: true
+            name: .rust
+        result: folder-rust
+      - params:
+          - isDir: true
+            name: zzqq-dir
+        result: folder
+      - params:
+          - isExpanded: true
+            isDir: true
+            name: zzqq-dir
+        result: folder-open

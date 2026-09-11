@@ -1,0 +1,292 @@
+subject: diffSplitUtil
+module: ./diff-split-util.ts
+subjectType: function
+methods:
+  toAlignedPairs:
+    terms:
+      # Zero: no changes yields no pairs
+      - params:
+          - changes: []
+        result: []
+      # Context-only run: every pair spans both sides with the same line
+      - params:
+          - changes:
+              - content: 'export function render() {'
+                newLineNumber: 1
+                oldLineNumber: 1
+                type: normal
+              - content: '  return null;'
+                newLineNumber: 2
+                oldLineNumber: 2
+                type: normal
+        result:
+          - left:
+              content: 'export function render() {'
+              newLineNumber: 1
+              oldLineNumber: 1
+              type: normal
+            right:
+              content: 'export function render() {'
+              newLineNumber: 1
+              oldLineNumber: 1
+              type: normal
+          - left:
+              content: '  return null;'
+              newLineNumber: 2
+              oldLineNumber: 2
+              type: normal
+            right:
+              content: '  return null;'
+              newLineNumber: 2
+              oldLineNumber: 2
+              type: normal
+      # Pure addition run: left side null, right side carries the add lines
+      - params:
+          - changes:
+              - content: 'const port = 8080;'
+                newLineNumber: 1
+                oldLineNumber: null
+                type: add
+              - content: 'export default port;'
+                newLineNumber: 2
+                oldLineNumber: null
+                type: add
+        result:
+          - left: null
+            right:
+              content: 'const port = 8080;'
+              newLineNumber: 1
+              oldLineNumber: null
+              type: add
+          - left: null
+            right:
+              content: 'export default port;'
+              newLineNumber: 2
+              oldLineNumber: null
+              type: add
+      # Pure deletion run: right side null, left side carries the del lines
+      - params:
+          - changes:
+              - content: 'const port = 3000;'
+                newLineNumber: null
+                oldLineNumber: 1
+                type: del
+              - content: 'export default app;'
+                newLineNumber: null
+                oldLineNumber: 2
+                type: del
+        result:
+          - left:
+              content: 'const port = 3000;'
+              newLineNumber: null
+              oldLineNumber: 1
+              type: del
+            right: null
+          - left:
+              content: 'export default app;'
+              newLineNumber: null
+              oldLineNumber: 2
+              type: del
+            right: null
+      # Replacement with more adds than dels: pair row-by-row, leftover add alone on the right
+      - params:
+          - changes:
+              - content: 'const port = 3000;'
+                newLineNumber: null
+                oldLineNumber: 1
+                type: del
+              - content: 'const host = localhost;'
+                newLineNumber: null
+                oldLineNumber: 2
+                type: del
+              - content: 'const port = 8080;'
+                newLineNumber: 1
+                oldLineNumber: null
+                type: add
+              - content: 'const host = 127.0.0.1;'
+                newLineNumber: 2
+                oldLineNumber: null
+                type: add
+              - content: 'const retries = 3;'
+                newLineNumber: 3
+                oldLineNumber: null
+                type: add
+        result:
+          - left:
+              content: 'const port = 3000;'
+              newLineNumber: null
+              oldLineNumber: 1
+              type: del
+            right:
+              content: 'const port = 8080;'
+              newLineNumber: 1
+              oldLineNumber: null
+              type: add
+          - left:
+              content: 'const host = localhost;'
+              newLineNumber: null
+              oldLineNumber: 2
+              type: del
+            right:
+              content: 'const host = 127.0.0.1;'
+              newLineNumber: 2
+              oldLineNumber: null
+              type: add
+          - left: null
+            right:
+              content: 'const retries = 3;'
+              newLineNumber: 3
+              oldLineNumber: null
+              type: add
+      # Replacement with more dels than adds: leftover del alone on the left
+      - params:
+          - changes:
+              - content: 'import fs from node:fs;'
+                newLineNumber: null
+                oldLineNumber: 1
+                type: del
+              - content: 'import path from node:path;'
+                newLineNumber: null
+                oldLineNumber: 2
+                type: del
+              - content: 'import os from node:os;'
+                newLineNumber: null
+                oldLineNumber: 3
+                type: del
+              - content: 'import fs from node:fs;'
+                newLineNumber: 1
+                oldLineNumber: null
+                type: add
+              - content: 'import path from node:path;'
+                newLineNumber: 2
+                oldLineNumber: null
+                type: add
+        result:
+          - left:
+              content: 'import fs from node:fs;'
+              newLineNumber: null
+              oldLineNumber: 1
+              type: del
+            right:
+              content: 'import fs from node:fs;'
+              newLineNumber: 1
+              oldLineNumber: null
+              type: add
+          - left:
+              content: 'import path from node:path;'
+              newLineNumber: null
+              oldLineNumber: 2
+              type: del
+            right:
+              content: 'import path from node:path;'
+              newLineNumber: 2
+              oldLineNumber: null
+              type: add
+          - left:
+              content: 'import os from node:os;'
+              newLineNumber: null
+              oldLineNumber: 3
+              type: del
+            right: null
+      # Adds emitted before dels: first del still pairs with first add, leftover add alone on the right
+      - params:
+          - changes:
+              - content: 'const retries = 3;'
+                newLineNumber: 1
+                oldLineNumber: null
+                type: add
+              - content: 'const port = 8080;'
+                newLineNumber: 2
+                oldLineNumber: null
+                type: add
+              - content: 'const port = 3000;'
+                newLineNumber: null
+                oldLineNumber: 1
+                type: del
+        result:
+          - left:
+              content: 'const port = 3000;'
+              newLineNumber: null
+              oldLineNumber: 1
+              type: del
+            right:
+              content: 'const retries = 3;'
+              newLineNumber: 1
+              oldLineNumber: null
+              type: add
+          - left: null
+            right:
+              content: 'const port = 8080;'
+              newLineNumber: 2
+              oldLineNumber: null
+              type: add
+      # Multiple separate change blocks separated by context, trailing block flushed at the end
+      - params:
+          - changes:
+              - content: 'import { createServer } from node:http;'
+                newLineNumber: 1
+                oldLineNumber: 1
+                type: normal
+              - content: 'const port = 3000;'
+                newLineNumber: null
+                oldLineNumber: 2
+                type: del
+              - content: 'const port = 8080;'
+                newLineNumber: 2
+                oldLineNumber: null
+                type: add
+              - content: 'export function start() {}'
+                newLineNumber: 3
+                oldLineNumber: 3
+                type: normal
+              - content: 'start();'
+                newLineNumber: 4
+                oldLineNumber: null
+                type: add
+              - content: "process.on('exit', () => {});"
+                newLineNumber: 5
+                oldLineNumber: null
+                type: add
+        result:
+          - left:
+              content: 'import { createServer } from node:http;'
+              newLineNumber: 1
+              oldLineNumber: 1
+              type: normal
+            right:
+              content: 'import { createServer } from node:http;'
+              newLineNumber: 1
+              oldLineNumber: 1
+              type: normal
+          - left:
+              content: 'const port = 3000;'
+              newLineNumber: null
+              oldLineNumber: 2
+              type: del
+            right:
+              content: 'const port = 8080;'
+              newLineNumber: 2
+              oldLineNumber: null
+              type: add
+          - left:
+              content: 'export function start() {}'
+              newLineNumber: 3
+              oldLineNumber: 3
+              type: normal
+            right:
+              content: 'export function start() {}'
+              newLineNumber: 3
+              oldLineNumber: 3
+              type: normal
+          - left: null
+            right:
+              content: 'start();'
+              newLineNumber: 4
+              oldLineNumber: null
+              type: add
+          - left: null
+            right:
+              content: "process.on('exit', () => {});"
+              newLineNumber: 5
+              oldLineNumber: null
+              type: add

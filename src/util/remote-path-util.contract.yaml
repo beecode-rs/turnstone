@@ -1,0 +1,130 @@
+subject: remotePathUtil
+module: ./remote-path-util.js
+subjectType: function
+methods:
+  toParentDir:
+    terms:
+      - params:
+          - path: /var/www/index.html
+        result: /var/www
+      - params:
+          - path: /var/www/nested/app.ts
+        result: /var/www/nested
+      - params:
+          - path: /index.html
+        result: /
+      - params:
+          - path: /
+        result: /
+      - params:
+          - path: ''
+        result: /
+      - params:
+          - path: var/www/app.ts
+        result: /var/www
+      - params:
+          - path: /var/www/
+        result: /var
+  normalizeRootPath:
+    terms:
+      - params:
+          - path: ''
+        result: /
+      - params:
+          - path: /
+        result: /
+      - params:
+          - path: '   '
+        result: /
+      - params:
+          - path: var/www
+        result: /var/www
+      - params:
+          - path: /var/www/
+        result: /var/www
+      - params:
+          - path: ///
+        result: /
+      - params:
+          - path: '  /var/www/app  '
+        result: /var/www/app
+  resolveFromFile:
+    terms:
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: /var/log/app.conf
+        result: /var/log/app.conf
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: notes.md
+        result: /var/www/docs/notes.md
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: ./notes.md
+        result: /var/www/docs/notes.md
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: ../lib/main.ts
+        result: /var/www/lib/main.ts
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: ../../../../etc/hosts
+        result: /etc/hosts
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: ./sub/../notes.md
+        result: /var/www/docs/notes.md
+      - params:
+          - fromFilePath: /var/www/docs/readme.md
+            targetPath: //var/www/x.md
+        result: /var/www/x.md
+      - params:
+          - fromFilePath: /readme.md
+            targetPath: other.md
+        result: /other.md
+  toRelativePath:
+    terms:
+      - params:
+          - path: /var/www/app/src/main.ts
+            root: /var/www/app
+        result: src/main.ts
+      - params:
+          - path: /var/www/app/src/main.ts
+            root: /var/www/app/
+        result: src/main.ts
+      - params:
+          - path: /var/www/app/src/main.ts
+            root: /
+        result: var/www/app/src/main.ts
+      - params:
+          - path: /var/www/app
+            root: /var/www/app
+        result: ''
+      - params:
+          - path: /etc/nginx/nginx.conf
+            root: /var/www
+        result: etc/nginx/nginx.conf
+      - params:
+          - path: /var
+            root: /var/www
+        result: var
+  toAncestorDirPaths:
+    terms:
+      - params:
+          - path: /
+        result: ['/']
+      - params:
+          - path: ''
+        result: ['/']
+      - params:
+          - path: /var/www/app.ts
+        result: ['/', '/var', '/var/www', '/var/www/app.ts']
+      - params:
+          - path: var/www/app.ts
+        result: ['/', '/var', '/var/www', '/var/www/app.ts']
+      - params:
+          - path: /a/b/c/d
+        result: ['/', '/a', '/a/b', '/a/b/c', '/a/b/c/d']
+      - params:
+          - path: /var/www/
+        result: ['/', '/var', '/var/www']

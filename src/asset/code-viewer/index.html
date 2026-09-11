@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        background: transparent;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+      body {
+        font-family: 'JetBrainsMonoViewer', monospace;
+        font-size: 13px;
+        line-height: 20px;
+        -webkit-text-size-adjust: 100%;
+      }
+      body.theme-dark {
+        --ts-gutter-color: #6e7681;
+        --ts-gutter-selected-color: #c9d1d9;
+        --ts-line-highlight: rgba(177, 186, 197, 0.12);
+      }
+      body.theme-light {
+        --ts-gutter-color: #6e7781;
+        --ts-gutter-selected-color: #24292f;
+        --ts-line-highlight: rgba(36, 41, 47, 0.08);
+      }
+      #turnstone-frame {
+        -webkit-tap-highlight-color: transparent;
+        display: flex;
+        min-width: 100%;
+      }
+      #turnstone-frame.hljs {
+        overflow-x: visible;
+        padding: 0;
+      }
+      #turnstone-gutter {
+        color: var(--ts-gutter-color);
+        flex: 0 0 auto;
+        min-width: 44px;
+        padding: 8px 8px 8px 0;
+        text-align: right;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      #turnstone-scroller {
+        -webkit-overflow-scrolling: touch;
+        flex: 1 1 auto;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 8px 12px;
+      }
+      #turnstone-code {
+        display: block;
+        margin: 0;
+        tab-size: 4;
+        white-space: pre;
+      }
+      #turnstone-code .ts-line {
+        display: block;
+      }
+      #turnstone-code .ts-line-selected {
+        background: var(--ts-line-highlight);
+      }
+      #turnstone-gutter .ts-gutter-selected {
+        color: var(--ts-gutter-selected-color);
+      }
+      body.no-line-numbers #turnstone-gutter {
+        display: none;
+      }
+      body.word-wrap #turnstone-scroller {
+        overflow-x: hidden;
+      }
+      body.word-wrap #turnstone-code {
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
+      }
+    </style>
+    <style id="turnstone-font">
+      /*__VIEWER_FONT_CSS__*/
+    </style>
+    <style id="turnstone-theme-dark">
+      /*__THEME_DARK__*/
+    </style>
+    <style id="turnstone-theme-light" disabled>
+      /*__THEME_LIGHT__*/
+    </style>
+  </head>
+  <body class="theme-dark">
+    <div class="hljs" id="turnstone-frame">
+      <div id="turnstone-gutter"></div>
+      <div id="turnstone-scroller">
+        <pre id="turnstone-code"></pre>
+      </div>
+    </div>
+    <script>
+      /*__HIGHLIGHT_JS__*/
+    </script>
+    <script>
+      ;(function () {
+        var frame = document.getElementById('turnstone-frame')
+        var gutter = document.getElementById('turnstone-gutter')
+        var scroller = document.getElementById('turnstone-scroller')
+        var code = document.getElementById('turnstone-code')
+        var state = {
+          content: '',
+          isLineNumbersHidden: false,
+          language: 'plaintext',
+          lastScrollPostAt: 0,
+          selectedLine: 0,
+          theme: 'dark',
+          wordWrap: false,
+        }
+
+        var postMessage = function (message) {
+          if (window.ReactNativeWebView) {
+            window.ReactNativeWebView.postMessage(JSON.stringify(message))
+            return
+          }
+          if (window.parent !== window) {
+            window.parent.postMessage(message, '*')
+          }
+        }
+
+        var alignGutterLines = function () {
+          var codeLines = code.children
+          var gutterLines = gutter.children
+          var lineCount = Math.min(codeLines.length, gutterLines.length)
+          var shouldAlign = state.wordWrap && !state.isLineNumbersHidden
+          var lineHeights = []
+          for (var lineIndex = 0; lineIndex < lineCount; lineIndex += 1) {
+            lineHeights.push(shouldAlign ? codeLines[lineIndex].offsetHeight + 'px' : '')
+          }
+          for (var alignIndex = 0; alignIndex < lineCount; alignIndex += 1) {
+            if (gutterLines[alignIndex].style.height !== lineHeights[alignIndex]) {
+              gutterLines[alignIndex].style.height = lineHeights[alignIndex]
+            }
+          }
+        }
+
+        var reportHeight = function () {
+          alignGutterLines()
+          postMessage({ height: Math.ceil(frame.offsetHeight), type: 'content-height' })
+        }
+
+        var escapeHtml = function (text) {
+          return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        }
+
+        var resolveHighlight = function (content, language) {
+          if (!window.hljs) {
+            return escapeHtml(content)
+          }
+          var knownLanguage = window.hljs.getLanguage(language) ? language : 'plaintext'
+          return window.hljs.highlight(content, { ignoreIllegals: true, language: knownLanguage }).value
+        }
+
+        var buildGutterHtml = function (lineCount) {
+          var gutterHtml = ''
+          for (var lineNumber = 1; lineNumber <= lineCount; lineNumber += 1) {
+            gutterHtml += '<div>' + lineNumber + '</div>'
+          }
+          return gutterHtml
+        }
+
+        var toCloseTag = function (openTag) {
+          var match = /^<([a-zA-Z][a-zA-Z0-9-]*)/.exec(openTag)
+          return match ? '</' + match[1] + '>' : ''
+        }
+
+        var splitHighlightedLines = function (html) {
+          var lines = []
+          var openTags = []
+          var lineParts = []
+          var parts = html.split(/(<[^>]*>)/)
+          for (var partIndex = 0; partIndex < parts.length; partIndex += 1) {
+            var part = parts[partIndex]
+            if (part === '') {
+              continue
+            }
+            if (part.charAt(0) === '<') {
+              if (part.charAt(1) === '/') {
+                openTags.pop()
+              } else {
+                openTags.push(part)
+              }
+              lineParts.push(part)
+              continue
+            }
+            var segments = part.split('\n')
+            for (var segmentIndex = 0; segmentIndex < segments.length; segmentIndex += 1) {
+              if (segmentIndex > 0) {
+                for (var closeIndex = openTags.length - 1; closeIndex >= 0; closeIndex -= 1) {
+                  lineParts.push(toCloseTag(openTags[closeIndex]))
+                }
+                lines.push(lineParts.join(''))
+                lineParts = []
+                for (var openIndex = 0; openIndex < openTags.length; openIndex += 1) {
+                  lineParts.push(openTags[openIndex])
+                }
+              }
+              lineParts.push(segments[segmentIndex])
+            }
+          }
+          lines.push(lineParts.join(''))
+          return lines
+        }
+
+        var buildCodeHtml = function (lineHtmls) {
+          var codeHtml = ''
+          for (var lineIndex = 0; lineIndex < lineHtmls.length; lineIndex += 1) {
+            var lineHtml = lineHtmls[lineIndex]
+            codeHtml += '<div class="ts-line">' + (lineHtml === '' ? '\n' : lineHtml) + '</div>'
+          }
+          return codeHtml
+        }
+
+        var selectedLineEl = null
+        var selectedGutterEl = null
+
+        var clearSelectedLine = function () {
+          if (selectedLineEl !== null) {
+            selectedLineEl.className = 'ts-line'
+            selectedLineEl = null
+          }
+          if (selectedGutterEl !== null) {
+            selectedGutterEl.className = ''
+            selectedGutterEl = null
+          }
+        }
+
+        var applySelectedLine = function () {
+          clearSelectedLine()
+          if (state.selectedLine < 1) {
+            return
+          }
+          var lineEl = code.children[state.selectedLine - 1]
+          if (!lineEl) {
+            state.selectedLine = 0
+            return
+          }
+          var gutterEl = gutter.children[state.selectedLine - 1]
+          lineEl.className = 'ts-line ts-line-selected'
+          if (gutterEl) {
+            gutterEl.className = 'ts-gutter-selected'
+          }
+          selectedLineEl = lineEl
+          selectedGutterEl = gutterEl || null
+        }
+
+        var toggleSelectedLine = function (lineNumber) {
+          state.selectedLine = state.selectedLine === lineNumber ? 0 : lineNumber
+          applySelectedLine()
+        }
+
+        var renderContent = function () {
+          var scrollLeft = scroller.scrollLeft
+          code.innerHTML = buildCodeHtml(splitHighlightedLines(resolveHighlight(state.content, state.language)))
+          gutter.innerHTML = buildGutterHtml(state.content.split('\n').length)
+          applySelectedLine()
+          scroller.scrollLeft = scrollLeft
+          reportHeight()
+        }
+
+        var applyBodyClass = function () {
+          var bodyClass = state.theme === 'dark' ? 'theme-dark' : 'theme-light'
+          if (state.wordWrap) {
+            bodyClass += ' word-wrap'
+          }
+          if (state.isLineNumbersHidden) {
+            bodyClass += ' no-line-numbers'
+          }
+          document.body.className = bodyClass
+        }
+
+        var applyTheme = function (theme) {
+          state.theme = theme
+          var isDark = theme === 'dark'
+          applyBodyClass()
+          document.getElementById('turnstone-theme-dark').disabled = !isDark
+          document.getElementById('turnstone-theme-light').disabled = isDark
+        }
+
+        var applyWordWrap = function (wordWrap) {
+          state.wordWrap = wordWrap
+          applyBodyClass()
+        }
+
+        var applyFontSize = function (fontSizePx, lineHeightPx) {
+          document.body.style.fontSize = fontSizePx + 'px'
+          document.body.style.lineHeight = lineHeightPx + 'px'
+        }
+
+        var applyLineNumbers = function (isLineNumbersHidden) {
+          state.isLineNumbersHidden = isLineNumbersHidden
+          applyBodyClass()
+        }
+
+        var applyMargin = function (paddingHorizontal, paddingVertical) {
+          var vertical = paddingVertical + 'px'
+          var horizontal = paddingHorizontal + 'px'
+          scroller.style.padding = vertical + ' ' + horizontal
+          gutter.style.padding = vertical + ' 8px ' + vertical + ' 0'
+        }
+
+        window.__turnstoneViewerReceive = function (message) {
+          if (!message) {
+            return
+          }
+          if (message.type === 'inject-content') {
+            state.content = message.content
+            state.language = message.language
+            renderContent()
+            return
+          }
+          if (message.type === 'inject-chunk') {
+            state.content += message.text
+            renderContent()
+            return
+          }
+          if (message.type === 'set-theme') {
+            applyTheme(message.theme)
+            reportHeight()
+            return
+          }
+          if (message.type === 'set-word-wrap') {
+            applyWordWrap(message.wordWrap)
+            reportHeight()
+            return
+          }
+          if (message.type === 'set-font-size') {
+            applyFontSize(message.fontSizePx, message.lineHeightPx)
+            reportHeight()
+            return
+          }
+          if (message.type === 'set-margin') {
+            applyMargin(message.paddingHorizontal, message.paddingVertical)
+            reportHeight()
+            return
+          }
+          if (message.type === 'set-line-numbers') {
+            applyLineNumbers(message.isLineNumbersHidden)
+            reportHeight()
+          }
+        }
+
+        window.addEventListener('message', function (event) {
+          if (window.__turnstoneViewerReceive) {
+            window.__turnstoneViewerReceive(event.data)
+          }
+        })
+
+        scroller.addEventListener('scroll', function () {
+          var now = Date.now()
+          if (now - state.lastScrollPostAt < 100) {
+            return
+          }
+          state.lastScrollPostAt = now
+          postMessage({
+            scrollLeft: Math.round(scroller.scrollLeft),
+            scrollWidth: scroller.scrollWidth,
+            type: 'scroll-position',
+            viewportWidth: scroller.clientWidth,
+          })
+        })
+
+        var PULL_DOWN_THRESHOLD_PX = 80
+        var TAP_SLOP_PX = 12
+        var pullTracker = { isPullHandled: false, startX: 0, startY: 0 }
+        var isTapInvalidated = false
+
+        var handleTouchStart = function (event) {
+          if (event.touches.length !== 1) {
+            pullTracker.isPullHandled = true
+            isTapInvalidated = true
+            return
+          }
+          pullTracker.isPullHandled = false
+          isTapInvalidated = false
+          pullTracker.startX = event.touches[0].clientX
+          pullTracker.startY = event.touches[0].clientY
+        }
+
+        var handleTouchMove = function (event) {
+          if (pullTracker.isPullHandled || event.touches.length !== 1) {
+            return
+          }
+          var deltaX = event.touches[0].clientX - pullTracker.startX
+          var deltaY = event.touches[0].clientY - pullTracker.startY
+          if (!isTapInvalidated && deltaX * deltaX + deltaY * deltaY > TAP_SLOP_PX * TAP_SLOP_PX) {
+            isTapInvalidated = true
+          }
+          if (deltaY < PULL_DOWN_THRESHOLD_PX || deltaY < Math.abs(deltaX) * 2) {
+            return
+          }
+          pullTracker.isPullHandled = true
+          postMessage({ type: 'pull-down' })
+        }
+
+        var handleTouchEnd = function () {
+          pullTracker.isPullHandled = false
+        }
+
+        var resolveClickedLineNumber = function (event) {
+          var target = event.target
+          if (!target || !target.closest) {
+            return 0
+          }
+          var gutterLine = target.closest('#turnstone-gutter > div')
+          if (gutterLine) {
+            return Array.prototype.indexOf.call(gutter.children, gutterLine) + 1
+          }
+          var codeLine = target.closest('.ts-line')
+          if (codeLine && codeLine.parentElement === code) {
+            return Array.prototype.indexOf.call(code.children, codeLine) + 1
+          }
+          return 0
+        }
+
+        var handleClick = function (event) {
+          if (isTapInvalidated) {
+            isTapInvalidated = false
+            return
+          }
+          var lineNumber = resolveClickedLineNumber(event)
+          if (lineNumber < 1) {
+            return
+          }
+          toggleSelectedLine(lineNumber)
+        }
+
+        document.addEventListener('touchstart', handleTouchStart, { passive: true })
+        document.addEventListener('touchmove', handleTouchMove, { passive: true })
+        document.addEventListener('touchend', handleTouchEnd, { passive: true })
+        document.addEventListener('touchcancel', handleTouchEnd, { passive: true })
+        frame.addEventListener('click', handleClick)
+
+        if (window.ResizeObserver) {
+          new ResizeObserver(reportHeight).observe(frame)
+        }
+      })()
+    </script>
+  </body>
+</html>

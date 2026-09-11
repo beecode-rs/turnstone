@@ -1,0 +1,98 @@
+subject: gitTreeStatusUtil
+module: ./git-tree-status-util.ts
+subjectType: function
+methods:
+  toPathStatusMap:
+    terms:
+      # changed and untracked land under their absolute paths
+      - params:
+          - changes:
+              - path: src/app.ts
+                type: changed
+              - path: notes/todo.md
+                type: untracked
+            repoRoot: /Users/dev/turnstone
+        result:
+          '/Users/dev/turnstone/src/app.ts': changed
+          '/Users/dev/turnstone/notes/todo.md': untracked
+      # renamed and unmerged both fold to changed
+      - params:
+          - changes:
+              - path: src/old-name.ts
+                type: renamed
+              - path: src/merge-conflict.ts
+                type: unmerged
+            repoRoot: /Users/dev/turnstone
+        result:
+          '/Users/dev/turnstone/src/old-name.ts': changed
+          '/Users/dev/turnstone/src/merge-conflict.ts': changed
+      # ignored entries are dropped rather than mapped
+      - params:
+          - changes:
+              - path: build/out.js
+                type: ignored
+              - path: src/app.ts
+                type: changed
+            repoRoot: /Users/dev/turnstone
+        result:
+          '/Users/dev/turnstone/src/app.ts': changed
+      # trailing slash on repoRoot must not produce double slashes in keys
+      - params:
+          - changes:
+              - path: src/app.ts
+                type: changed
+              - path: notes/todo.md
+                type: untracked
+            repoRoot: '/Users/dev/turnstone/'
+        result:
+          '/Users/dev/turnstone/src/app.ts': changed
+          '/Users/dev/turnstone/notes/todo.md': untracked
+      # Zero: no changes yields an empty map
+      - params:
+          - changes: []
+            repoRoot: /Users/dev/turnstone
+        result: {}
+  toRepoRelativePath:
+    terms:
+      # absolute path inside the repo becomes repo-relative without a leading slash
+      - params:
+          - path: /Users/dev/turnstone/src/app.ts
+            repoRoot: /Users/dev/turnstone
+        result: src/app.ts
+      # sibling directory sharing the repo name prefix is outside the repo
+      - params:
+          - path: /Users/dev/turnstone-backup/src/main.ts
+            repoRoot: /Users/dev/turnstone
+        result: null
+      # unrelated absolute path is outside the repo
+      - params:
+          - path: /Users/dev/other-project/src/main.ts
+            repoRoot: /Users/dev/turnstone
+        result: null
+      # trailing slash on repoRoot still resolves repo-relative
+      - params:
+          - path: /Users/dev/turnstone/src/app.ts
+            repoRoot: '/Users/dev/turnstone/'
+        result: src/app.ts
+      # the repo root itself has no repo-relative path
+      - params:
+          - path: /Users/dev/turnstone
+            repoRoot: /Users/dev/turnstone
+        result: null
+  toAbsoluteTreePath:
+    terms:
+      # relative tree path joins under the repo root
+      - params:
+          - path: src/app.ts
+            repoRoot: /Users/dev/turnstone
+        result: /Users/dev/turnstone/src/app.ts
+      # trailing slash on repoRoot does not produce a double slash
+      - params:
+          - path: src/app.ts
+            repoRoot: '/Users/dev/turnstone/'
+        result: /Users/dev/turnstone/src/app.ts
+      # leading slash on the tree path is stripped before joining
+      - params:
+          - path: '/src/app.ts'
+            repoRoot: /Users/dev/turnstone
+        result: /Users/dev/turnstone/src/app.ts

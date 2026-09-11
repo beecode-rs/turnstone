@@ -1,0 +1,46 @@
+subject: treeCacheValidityUtil
+module: ./tree-cache-validity-util.ts
+subjectType: function
+methods:
+  isCacheValid:
+    terms:
+      - params:
+          - cache: null
+            currentDirMtime: 100
+        result: false
+      - params:
+          - cache:
+              children:
+                - isDir: true
+                  mtime: 10
+                  name: src
+                  size: 0
+              dirMtime: 1700000000
+            currentDirMtime: 1700000000
+        result: true
+      - params:
+          - cache:
+              children: []
+              dirMtime: 100
+            currentDirMtime: 101
+        result: false
+      - params:
+          - cache:
+              children: []
+              dirMtime: 0
+            currentDirMtime: 0
+        result: true
+      - params:
+          - cache:
+              children:
+                - isDir: false
+                  mtime: 3
+                  name: file2
+                  size: 3
+                - isDir: false
+                  mtime: 4
+                  name: file10
+                  size: 30
+              dirMtime: 5
+            currentDirMtime: 5
+        result: true

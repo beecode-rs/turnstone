@@ -1,0 +1,65 @@
+subject: projectSeedService
+module: ./project-seed-service.ts
+subjectType: function
+methods:
+  buildLegacySeeds:
+    terms:
+      - params:
+          - legacyRootPathByHostId: {}
+            servers: []
+        result: []
+      - params:
+          - legacyRootPathByHostId: {}
+            servers:
+              - authMethod: password
+                host: 203.0.113.10
+                id: host-a
+                label: Build box
+                port: 22
+                username: deploy
+        result:
+          - hostId: host-a
+            id: legacy-project-host-a
+            name: Build box
+            path: /
+      - params:
+          - legacyRootPathByHostId:
+              host-a: /var/www
+              host-b: /home/deploy/relay
+            servers:
+              - authMethod: deviceKey
+                host: 203.0.113.10
+                id: host-a
+                label: Build box
+                port: 22
+                username: deploy
+              - authMethod: key
+                host: 198.51.100.7
+                id: host-b
+                label: Media server
+                port: 2222
+                username: root
+        result:
+          - hostId: host-a
+            id: legacy-project-host-a
+            name: www
+            path: /var/www
+          - hostId: host-b
+            id: legacy-project-host-b
+            name: relay
+            path: /home/deploy/relay
+      - params:
+          - legacyRootPathByHostId:
+              host-a: /srv/apps/turnstone///
+            servers:
+              - authMethod: password
+                host: 203.0.113.10
+                id: host-a
+                label: Build box
+                port: 22
+                username: deploy
+        result:
+          - hostId: host-a
+            id: legacy-project-host-a
+            name: turnstone
+            path: /srv/apps/turnstone

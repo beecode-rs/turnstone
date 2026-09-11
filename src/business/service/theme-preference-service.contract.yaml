@@ -1,0 +1,171 @@
+subject: ThemePreferenceService
+module: ./theme-preference-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  parsePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - value: paper:system
+        result:
+          scheme: system
+          style: paper
+      - constructorParams: []
+        params:
+          - value: paper:dark
+        result:
+          scheme: dark
+          style: paper
+      - constructorParams: []
+        params:
+          - value: eink:light
+        result:
+          scheme: light
+          style: eink
+      - constructorParams: []
+        params:
+          - value: eink:dark
+        result:
+          scheme: dark
+          style: eink
+      - constructorParams: []
+        params:
+          - value: system
+        result:
+          scheme: system
+          style: paper
+      - constructorParams: []
+        params:
+          - value: dark
+        result:
+          scheme: dark
+          style: paper
+      - constructorParams: []
+        params:
+          - value: null
+        result:
+          scheme: system
+          style: paper
+      - constructorParams: []
+        params:
+          - value: ''
+        result:
+          scheme: system
+          style: paper
+      - constructorParams: []
+        params:
+          - value: blueberry
+        result:
+          scheme: system
+          style: paper
+      - constructorParams: []
+        params:
+          - value: 'eink:bogus'
+        result:
+          scheme: system
+          style: eink
+      - constructorParams: []
+        params:
+          - value: 'garbage:dark'
+        result:
+          scheme: dark
+          style: paper
+  resolveScheme:
+    terms:
+      - constructorParams: []
+        params:
+          - scheme: dark
+            systemScheme: light
+        result: dark
+      - constructorParams: []
+        params:
+          - scheme: light
+            systemScheme: dark
+        result: light
+      - constructorParams: []
+        params:
+          - scheme: system
+            systemScheme: dark
+        result: dark
+      - constructorParams: []
+        params:
+          - scheme: system
+            systemScheme: light
+        result: light
+      - constructorParams: []
+        params:
+          - scheme: system
+            systemScheme: unspecified
+        result: light
+      - constructorParams: []
+        params:
+          - scheme: system
+            systemScheme: null
+        result: light
+      - constructorParams: []
+        params:
+          - scheme: light
+            systemScheme: unspecified
+        result: light
+  resolveTheme:
+    terms:
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: dark
+              style: paper
+            systemScheme: light
+        result: paperDark
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: system
+              style: paper
+            systemScheme: dark
+        result: paperDark
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: system
+              style: paper
+            systemScheme: null
+        result: paperLight
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: light
+              style: eink
+            systemScheme: dark
+        result: einkLight
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: system
+              style: eink
+            systemScheme: light
+        result: einkLight
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: system
+              style: eink
+            systemScheme: dark
+        result: einkDark
+  serializePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: dark
+              style: eink
+        result: 'eink:dark'
+      - constructorParams: []
+        params:
+          - preference:
+              scheme: system
+              style: paper
+        result: 'paper:system'

@@ -1,0 +1,181 @@
+subject: fileDecodeUtil
+module: ./file-decode-util.ts
+subjectType: function
+methods:
+  sniffBinary:
+    terms:
+      - params:
+          - bytes: [104, 105]
+        result: false
+      - params:
+          - bytes: [104, 0, 105]
+        result: true
+      - params:
+          - bytes: [97, 98, 99, 100, 0]
+        result: true
+  detectBom:
+    terms:
+      - params:
+          - bytes: [239, 187, 191, 104, 105]
+        result: utf-8
+      - params:
+          - bytes: [255, 254, 104, 0]
+        result: utf-16le
+      - params:
+          - bytes: [254, 255, 0, 104]
+        result: utf-16be
+      - params:
+          - bytes: [104, 105]
+        result: null
+      - params:
+          - bytes: [239, 187]
+        result: null
+      - params:
+          - bytes: []
+        result: null
+  stripBom:
+    terms:
+      - params:
+          - bytes: [239, 187, 191, 104, 105]
+        result:
+          bom: utf-8
+          bytes: [104, 105]
+      - params:
+          - bytes: [255, 254, 104, 0]
+        result:
+          bom: utf-16le
+          bytes: [104, 0]
+      - params:
+          - bytes: [254, 255, 0, 104]
+        result:
+          bom: utf-16be
+          bytes: [0, 104]
+      - params:
+          - bytes: [104, 105]
+        result:
+          bom: null
+          bytes: [104, 105]
+  detectTextEncoding:
+    terms:
+      - params:
+          - bytes: [104, 105]
+        result: utf-8
+      - params:
+          - bytes: [99, 97, 102, 195, 169]
+        result: utf-8
+      - params:
+          - bytes: [99, 97, 102, 233]
+        result: latin-1
+      - params:
+          - bytes: []
+        result: utf-8
+  resolveEncoding:
+    terms:
+      - params:
+          - bom: utf-16le
+            bytes: [104, 0]
+        result: utf-16le
+      - params:
+          - bom: utf-8
+            bytes: [104, 105, 10]
+        result: utf-8
+      - params:
+          - bom: null
+            bytes: [99, 97, 102, 233, 10]
+        result: latin-1
+      - params:
+          - bom: null
+            bytes: [104, 105, 195]
+        result: utf-8
+  decodeBytes:
+    terms:
+      - params:
+          - bytes: [104, 105]
+            encoding: utf-8
+        result: hi
+      - params:
+          - bytes: [99, 97, 102, 233]
+            encoding: latin-1
+        result: "café"
+      - params:
+          - bytes: [104, 0, 105, 0]
+            encoding: utf-16le
+        result: hi
+      - params:
+          - bytes: [0, 104, 0, 105]
+            encoding: utf-16be
+        result: hi
+  decodeChunk:
+    terms:
+      - params:
+          - chunk: [104, 105, 10]
+            encoding: utf-8
+            isFinal: true
+            pendingBytes: []
+        result:
+          pendingBytes: []
+          text: "hi\n"
+      - params:
+          - chunk: [104, 105, 195]
+            encoding: utf-8
+            isFinal: false
+            pendingBytes: []
+        result:
+          pendingBytes: [104, 105, 195]
+          text: ""
+      - params:
+          - chunk: [169, 10]
+            encoding: utf-8
+            isFinal: true
+            pendingBytes: [104, 105, 195]
+        result:
+          pendingBytes: []
+          text: "hié\n"
+      - params:
+          - chunk: []
+            encoding: utf-8
+            isFinal: true
+            pendingBytes: [104, 105]
+        result:
+          pendingBytes: []
+          text: hi
+      - params:
+          - chunk: [104, 0, 105]
+            encoding: utf-16le
+            isFinal: false
+            pendingBytes: []
+        result:
+          pendingBytes: [105]
+          text: h
+      - params:
+          - chunk: []
+            encoding: utf-8
+            isFinal: true
+            pendingBytes: []
+        result:
+          pendingBytes: []
+          text: ""
+  decodeAllChunks:
+    terms:
+      - params:
+          - chunks:
+              - [104, 105, 195]
+              - [169, 10, 119]
+              - [195, 169, 114, 108, 100, 10]
+        result: "hié\nwérld\n"
+      - params:
+          - chunks:
+              - [239, 187, 191, 104, 105, 10]
+        result: "hi\n"
+      - params:
+          - chunks:
+              - [99, 97, 102, 233, 10]
+              - [33, 10]
+        result: "café\n!\n"
+      - params:
+          - chunks:
+              - [255, 254, 104, 0, 105, 0]
+        result: hi
+      - params:
+          - chunks: []
+        result: ""

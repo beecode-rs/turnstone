@@ -1,0 +1,361 @@
+subject: FileNestingMatchService
+module: ./file-nesting-match-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  matchParent:
+    terms:
+      - constructorParams: []
+        params:
+          - name: file.ts
+            pattern: '*.ts'
+        result: file
+      - constructorParams: []
+        params:
+          - name: file.test.ts
+            pattern: '*.ts'
+        result: file.test
+      - constructorParams: []
+        params:
+          - name: file.js
+            pattern: '*.ts'
+        result: null
+      - constructorParams: []
+        params:
+          - name: .ts
+            pattern: '*.ts'
+        result: ''
+      - constructorParams: []
+        params:
+          - name: package.json
+            pattern: package.json
+        result: ''
+      - constructorParams: []
+        params:
+          - name: package.json
+            pattern: '*.json'
+        result: package
+      - constructorParams: []
+        params:
+          - name: a.spec.b.ts
+            pattern: '*.spec.*.ts'
+        result: a
+  resolveChildPattern:
+    terms:
+      - constructorParams: []
+        params:
+          - capture: file
+            childPattern: '${capture}.test.ts'
+        result: file.test.ts
+      - constructorParams: []
+        params:
+          - capture: file
+            childPattern: '$(capture).js'
+        result: file.js
+      - constructorParams: []
+        params:
+          - capture: ''
+            childPattern: package-lock.json
+        result: package-lock.json
+      - constructorParams: []
+        params:
+          - capture: ''
+            childPattern: '.env*'
+        result: '.env*'
+      - constructorParams: []
+        params:
+          - capture: file
+            childPattern: '${capture}.*.ts'
+        result: 'file.*.ts'
+  resolvePatternPreview:
+    terms:
+      - constructorParams: []
+        params:
+          - pattern:
+              children: ['${capture}.test.ts', '${capture}.js']
+              parent: '*.ts'
+        result:
+          childNames: [file.test.ts, file.js]
+          parentName: file.ts
+      - constructorParams: []
+        params:
+          - pattern:
+              children: [package-lock.json, yarn.lock]
+              parent: package.json
+        result:
+          childNames: [package-lock.json, yarn.lock]
+          parentName: package.json
+      - constructorParams: []
+        params:
+          - pattern:
+              children: ['.env*']
+              parent: .env
+        result:
+          childNames: ['.env*']
+          parentName: .env
+  buildNests:
+    terms:
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: file.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: file.test.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: file.contract.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: other.txt
+                size: 1
+              - isDir: true
+                mtime: 1
+                name: src
+                size: 0
+            patterns:
+              - children: ['${capture}.contract.ts', '${capture}.test.ts']
+                parent: '*.ts'
+        result:
+          childrenByParentName:
+            file.ts:
+              - isDir: false
+                mtime: 1
+                name: file.contract.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: file.test.ts
+                size: 1
+          nestedNames: [file.contract.ts, file.test.ts]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: file.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: file.test.ts
+                size: 1
+              - isDir: true
+                mtime: 1
+                name: src.ts
+                size: 0
+            patterns:
+              - children: ['${capture}.test.ts']
+                parent: '*.ts'
+        result:
+          childrenByParentName:
+            file.ts:
+              - isDir: false
+                mtime: 1
+                name: file.test.ts
+                size: 1
+          nestedNames: [file.test.ts]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: a.test.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: a.test.test.ts
+                size: 1
+            patterns:
+              - children: ['${capture}.test.ts']
+                parent: '*.ts'
+        result:
+          childrenByParentName:
+            a.ts:
+              - isDir: false
+                mtime: 1
+                name: a.test.ts
+                size: 1
+          nestedNames: [a.test.ts]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: package.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: package-lock.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: yarn.lock
+                size: 1
+            patterns:
+              - children: [package-lock.json, yarn.lock]
+                parent: package.json
+        result:
+          childrenByParentName:
+            package.json:
+              - isDir: false
+                mtime: 1
+                name: package-lock.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: yarn.lock
+                size: 1
+          nestedNames: [package-lock.json, yarn.lock]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: tsconfig.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: tsconfig.node.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: tsconfig.app.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: other.json
+                size: 1
+            patterns:
+              - children: ['tsconfig.*.json']
+                parent: tsconfig.json
+        result:
+          childrenByParentName:
+            tsconfig.json:
+              - isDir: false
+                mtime: 1
+                name: tsconfig.app.json
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: tsconfig.node.json
+                size: 1
+          nestedNames: [tsconfig.app.json, tsconfig.node.json]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: .env
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: .env.local
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: .env.production
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: envfile
+                size: 1
+            patterns:
+              - children: ['.env*']
+                parent: .env
+        result:
+          childrenByParentName:
+            .env:
+              - isDir: false
+                mtime: 1
+                name: .env.local
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: .env.production
+                size: 1
+          nestedNames: [.env.local, .env.production]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: file.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: file.test.ts
+                size: 1
+            patterns: []
+        result:
+          childrenByParentName: {}
+          nestedNames: []
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: b.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: a.js
+                size: 1
+            patterns:
+              - children: ['${capture}.js']
+                parent: '*.ts'
+              - children: [a.js]
+                parent: a.ts
+        result:
+          childrenByParentName:
+            a.ts:
+              - isDir: false
+                mtime: 1
+                name: a.js
+                size: 1
+          nestedNames: [a.js]
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: file.ts
+                size: 1
+            patterns:
+              - children: ['${capture}.ts']
+                parent: '*.ts'
+        result:
+          childrenByParentName: {}
+          nestedNames: []
+      - constructorParams: []
+        params:
+          - entries:
+              - isDir: false
+                mtime: 1
+                name: a.ts
+                size: 1
+              - isDir: false
+                mtime: 1
+                name: b.ts
+                size: 1
+            patterns:
+              - children: ['${capture}.js']
+                parent: '*.ts'
+        result:
+          childrenByParentName: {}
+          nestedNames: []

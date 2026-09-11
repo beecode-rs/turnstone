@@ -1,0 +1,186 @@
+subject: openScreensUtil
+module: ./open-screens-util.ts
+subjectType: function
+methods:
+  activateFile:
+    terms:
+      - params:
+          - path: null
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts']
+        result:
+          activeFilePath: null
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts']
+      - params:
+          - path: /srv/app/missing.ts
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts']
+        result:
+          activeFilePath: /srv/app/a.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts']
+      - params:
+          - path: /srv/app/b.ts
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']
+        result:
+          activeFilePath: /srv/app/b.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']
+  closeFile:
+    terms:
+      - params:
+          - path: /srv/app/missing.ts
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts']
+        result:
+          activeFilePath: /srv/app/a.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts']
+      - params:
+          - path: /srv/app/b.ts
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']
+        result:
+          activeFilePath: /srv/app/a.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts']
+      - params:
+          - path: /srv/app/a.ts
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts', '/srv/app/c.ts']
+        result:
+          activeFilePath: /srv/app/c.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/b.ts', '/srv/app/c.ts']
+      - params:
+          - path: /srv/app/a.ts
+            state:
+              activeFilePath: /srv/app/a.ts
+              isDrawerOpen: false
+              openFilePaths: ['/srv/app/a.ts']
+        result:
+          activeFilePath: null
+          isDrawerOpen: false
+          openFilePaths: []
+  resolveKind:
+    terms:
+      - params:
+          - path: /srv/app/README.md
+        result: markdown
+      - params:
+          - path: /srv/app/notes.MARKDOWN
+        result: markdown
+      - params:
+          - path: /srv/app/index.html
+        result: html
+      - params:
+          - path: /srv/app/page.htm
+        result: html
+      - params:
+          - path: /srv/app/REPORT.HTML
+        result: html
+      - params:
+          - path: /srv/app/diagram.puml
+        result: plantuml
+      - params:
+          - path: /srv/app/DIAGRAM.PUML
+        result: plantuml
+      - params:
+          - path: /srv/app/flow.pu
+        result: plantuml
+      - params:
+          - path: /srv/app/arch.plantuml
+        result: plantuml
+      - params:
+          - path: /srv/app/flow.mmd
+        result: mermaid
+      - params:
+          - path: /srv/app/FLOW.MMD
+        result: mermaid
+      - params:
+          - path: /srv/app/diagram.mermaid
+        result: mermaid
+      - params:
+          - path: /srv/app/api.puz
+        result: file
+      - params:
+          - path: /srv/app/flow.mmdx
+        result: file
+      - params:
+          - path: /srv/app/puppet.conf
+        result: file
+      - params:
+          - path: /srv/app/template.htmlx
+        result: file
+      - params:
+          - path: /srv/app/src/main.ts
+        result: file
+      - params:
+          - path: /srv/app/Makefile
+        result: file
+  restoreFiles:
+    terms:
+      - params:
+          - record:
+              activeFilePath: null
+              openFilePaths: []
+        result:
+          activeFilePath: null
+          isDrawerOpen: false
+          openFilePaths: []
+      - params:
+          - record:
+              activeFilePath: /srv/app/a.ts
+              openFilePaths: ['/srv/app/a.ts']
+        result:
+          activeFilePath: /srv/app/a.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts']
+      - params:
+          - record:
+              activeFilePath: /srv/app/b.ts
+              openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']
+        result:
+          activeFilePath: /srv/app/b.ts
+          isDrawerOpen: false
+          openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']
+  toRecord:
+    terms:
+      - params:
+          - state:
+              activeFilePath: null
+              isDrawerOpen: false
+              openFilePaths: []
+        result:
+          activeFilePath: null
+          openFilePaths: []
+      - params:
+          - state:
+              activeFilePath: null
+              isDrawerOpen: true
+              openFilePaths: ['/srv/app/a.ts']
+        result:
+          activeFilePath: null
+          openFilePaths: ['/srv/app/a.ts']
+      - params:
+          - state:
+              activeFilePath: /srv/app/b.ts
+              isDrawerOpen: true
+              openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']
+        result:
+          activeFilePath: /srv/app/b.ts
+          openFilePaths: ['/srv/app/a.ts', '/srv/app/b.ts']

@@ -1,0 +1,113 @@
+subject: searchCommandUtil
+module: ./search-command-util.ts
+subjectType: function
+methods:
+  buildRipgrepContentCommand:
+    terms:
+      - params:
+          - pattern: TODO
+            root: /srv/app
+        result: "LC_ALL=C rg --json --smart-case --max-count 50 --max-filesize 2M -g '!.git' --hidden -- 'TODO' '/srv/app'"
+      - params:
+          - isIgnoredFilesIncluded: false
+            pattern: TODO
+            root: /srv/app
+        result: "LC_ALL=C rg --json --smart-case --max-count 50 --max-filesize 2M -g '!.git' --hidden -- 'TODO' '/srv/app'"
+      - params:
+          - isIgnoredFilesIncluded: true
+            pattern: TODO
+            root: /srv/app
+        result: "LC_ALL=C rg --json --smart-case --max-count 50 --max-filesize 2M -g '!.git' --hidden --no-ignore -- 'TODO' '/srv/app'"
+      - params:
+          - pattern: it's
+            root: /srv/my repo
+        result: "LC_ALL=C rg --json --smart-case --max-count 50 --max-filesize 2M -g '!.git' --hidden -- 'it'\\''s' '/srv/my repo'"
+  buildGrepContentCommand:
+    terms:
+      - params:
+          - pattern: TODO
+            root: /srv/app
+        result: "LC_ALL=C grep -rn -I -E --color=never --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist -- 'TODO' '/srv/app' 2>/dev/null"
+      - params:
+          - pattern: it's
+            root: /srv/my repo
+        result: "LC_ALL=C grep -rn -I -E --color=never --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist -- 'it'\\''s' '/srv/my repo' 2>/dev/null"
+  buildFindGrepContentCommand:
+    terms:
+      - params:
+          - pattern: TODO
+            root: /srv/app
+        result: "LC_ALL=C find '/srv/app' -name .git -prune -o -type f -exec grep -n -H -- 'TODO' /dev/null {} +"
+      - params:
+          - pattern: it's
+            root: /srv/my repo
+        result: "LC_ALL=C find '/srv/my repo' -name .git -prune -o -type f -exec grep -n -H -- 'it'\\''s' /dev/null {} +"
+  buildRipgrepFilenameCommand:
+    terms:
+      - params:
+          - pattern: app.ts
+            root: /srv/app
+        result: "LC_ALL=C rg --files --hidden -g '!.git' '/srv/app' | LC_ALL=C rg -i -- 'a.*p.*p.*\\..*t.*s'"
+      - params:
+          - isIgnoredFilesIncluded: false
+            pattern: app.ts
+            root: /srv/app
+        result: "LC_ALL=C rg --files --hidden -g '!.git' '/srv/app' | LC_ALL=C rg -i -- 'a.*p.*p.*\\..*t.*s'"
+      - params:
+          - isIgnoredFilesIncluded: true
+            pattern: app.ts
+            root: /srv/app
+        result: "LC_ALL=C rg --files --hidden -g '!.git' --no-ignore '/srv/app' | LC_ALL=C rg -i -- 'a.*p.*p.*\\..*t.*s'"
+      - params:
+          - pattern: readmd
+            root: /srv/app
+        result: "LC_ALL=C rg --files --hidden -g '!.git' '/srv/app' | LC_ALL=C rg -i -- 'r.*e.*a.*d.*m.*d'"
+  buildFindFilenameCommand:
+    terms:
+      - params:
+          - pattern: app.ts
+            root: /srv/app
+        result: "LC_ALL=C find '/srv/app' -name .git -prune -o -type f -print | LC_ALL=C grep -i -E -- 'a.*p.*p.*\\..*t.*s'"
+      - params:
+          - pattern: readmd
+            root: /srv/app
+        result: "LC_ALL=C find '/srv/app' -name .git -prune -o -type f -print | LC_ALL=C grep -i -E -- 'r.*e.*a.*d.*m.*d'"
+  selectContentTier:
+    terms:
+      - params:
+          - capabilities:
+              isRipgrepAvailable: true
+              platform: linux
+        result: ripgrep
+      - params:
+          - capabilities:
+              isRipgrepAvailable: true
+              platform: other
+        result: ripgrep
+      - params:
+          - capabilities:
+              isRipgrepAvailable: false
+              platform: linux
+        result: grep
+      - params:
+          - capabilities:
+              isRipgrepAvailable: false
+              platform: darwin
+        result: grep
+      - params:
+          - capabilities:
+              isRipgrepAvailable: false
+              platform: other
+        result: find-grep
+  selectFilenameTier:
+    terms:
+      - params:
+          - capabilities:
+              isRipgrepAvailable: true
+              platform: linux
+        result: ripgrep
+      - params:
+          - capabilities:
+              isRipgrepAvailable: false
+              platform: linux
+        result: find-grep

@@ -1,0 +1,41 @@
+subject: plantumlUrlUtil
+module: ./plantuml-url-util.ts
+subjectType: function
+methods:
+  encodeSource:
+    terms:
+      - params:
+          - source: "@startuml\nBob -> Alice : hello\n@enduml"
+        result: SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+  normalizeSource:
+    terms:
+      - params:
+          - source: "@startuml\nBob -> Alice : hello\n@enduml"
+        result: "@startuml\nBob -> Alice : hello\n@enduml"
+      - params:
+          - source: "@startmindmap\n* root\n@endmindmap"
+        result: "@startmindmap\n* root\n@endmindmap"
+      - params:
+          - source: 'Bob -> Alice : hello'
+        result: "@startuml\nBob -> Alice : hello\n@enduml"
+      - params:
+          - source: "  @startuml\nBob -> Alice : hello\n@enduml"
+        result: "  @startuml\nBob -> Alice : hello\n@enduml"
+  resolveDiagramUrl:
+    terms:
+      - params:
+          - serverUrl: https://www.plantuml.com/plantuml
+            source: "@startuml\nBob -> Alice : hello\n@enduml"
+        result: https://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+      - params:
+          - serverUrl: https://uml.example.com/plantuml/
+            source: "@startuml\nBob -> Alice : hello\n@enduml"
+        result: https://uml.example.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+      - params:
+          - serverUrl: https://www.plantuml.com/plantuml
+            source: 'Bob -> Alice : hello'
+        result: https://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+      - params:
+          - serverUrl: '  https://www.plantuml.com/plantuml  '
+            source: 'Bob -> Alice : hello'
+        result: https://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000

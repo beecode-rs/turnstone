@@ -1,0 +1,15 @@
+subject: nodeCryptoAlgorithmNames
+module: ./node-crypto-algorithm-names.ts
+subjectType: function
+methods:
+  toNodeNames:
+    terms:
+      - params:
+          - names: []
+        result: []
+      - params:
+          - names: [AES-128-CTR]
+        result: [aes-128-ctr]
+      - params:
+          - names: [AES-128-CTR, AES-256-GCM, CHACHA20-POLY1305, SHA256, SHA1]
+        result: [aes-128-ctr, aes-256-gcm, chacha20-poly1305, sha256, sha1]

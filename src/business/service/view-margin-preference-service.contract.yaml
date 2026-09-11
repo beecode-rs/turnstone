@@ -1,0 +1,34 @@
+subject: ViewMarginPreferenceService
+module: ./view-margin-preference-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  parsePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - value: compact
+        result: compact
+      - constructorParams: []
+        params:
+          - value: normal
+        result: normal
+      - constructorParams: []
+        params:
+          - value: large
+        result: large
+      - constructorParams: []
+        params:
+          - value: null
+        result: normal
+      - constructorParams: []
+        params:
+          - value: default
+        result: normal
+      - constructorParams: []
+        params:
+          - value: wide
+        result: normal

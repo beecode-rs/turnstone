@@ -1,0 +1,15 @@
+subject: installNodeBufferSliceMethods
+module: ./install-node-buffer-slice-methods.ts
+subjectType: function
+methods:
+  install:
+    terms:
+      - params:
+          - __import__:./__fixtures__/polyfill-buffer.ts:Buffer
+        result: !undefined
+      - params:
+          - __import__:./__fixtures__/polyfill-buffer.ts:Buffer
+        result: !undefined
+      - params:
+          - __class_ref:Buffer__
+        result: !undefined

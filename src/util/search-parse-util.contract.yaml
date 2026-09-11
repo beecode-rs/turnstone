@@ -1,0 +1,81 @@
+subject: searchParseUtil
+module: ./search-parse-util.ts
+subjectType: function
+methods:
+  parseRipgrepJsonLine:
+    terms:
+      - params:
+          - line: '{"type":"begin","data":{"path":{"text":"src/app.ts"}}}'
+        result: null
+      - params:
+          - line: '{"type":"end","data":{"path":{"text":"src/app.ts"},"binary_offset":null,"stats":{}}}'
+        result: null
+      - params:
+          - line: '{"type":"summary","data":{"elapsed_total":{"secs":0,"nanos":5,"human":"0s"},"stats":{}}}'
+        result: null
+      - params:
+          - line: '{"type":"match","data":{"path":{"text":"src/app.ts"},"lines":{"text":"const x = 1\n"},"line_number":3,"absolute_offset":34,"submatches":[{"match":{"text":"x"},"start":6,"end":7}]}}'
+        result:
+          lineNumber: 3
+          lineText: const x = 1
+          path: src/app.ts
+          submatches:
+            - end: 7
+              start: 6
+      - params:
+          - line: '{"type":"match","data":{"path":{"text":"src/a.ts"},"lines":{"text":"foo bar\n"},"line_number":1,"absolute_offset":0,"submatches":[{"match":{"text":"foo"},"start":0,"end":3},{"match":{"text":"bar"},"start":4,"end":7}]}}'
+        result:
+          lineNumber: 1
+          lineText: foo bar
+          path: src/a.ts
+          submatches:
+            - end: 3
+              start: 0
+            - end: 7
+              start: 4
+      - params:
+          - line: '{"type":"match","data":{"path":{"bytes":"c3JjL2IudHM="},"lines":{"text":"bin\n"},"line_number":9,"absolute_offset":10,"submatches":[]}}'
+        result: null
+      - params:
+          - line: not json at all
+        result: null
+  parseGrepLine:
+    terms:
+      - params:
+          - line: 'src/app.ts:42:const x = 1'
+        result:
+          lineNumber: 42
+          lineText: const x = 1
+          path: src/app.ts
+          submatches: []
+      - params:
+          - line: './a:b.ts:3:hello: world'
+        result:
+          lineNumber: 3
+          lineText: 'hello: world'
+          path: ./a:b.ts
+          submatches: []
+      - params:
+          - line: 'Binary file ./x.bin matches'
+        result: null
+      - params:
+          - line: no colons here
+        result: null
+      - params:
+          - line: 'src/app.ts:notanumber:content'
+        result: null
+  parseFilenameLine:
+    terms:
+      - params:
+          - line: src/util/foo.ts
+        result:
+          lineNumber: null
+          lineText: null
+          path: src/util/foo.ts
+          submatches: []
+      - params:
+          - line: '  '
+        result: null
+      - params:
+          - line: ''
+        result: null

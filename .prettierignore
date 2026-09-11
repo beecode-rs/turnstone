@@ -1,0 +1,13 @@
+node_modules
+src/asset
+pnpm-lock.yaml
+.bundle-check
+.expo
+android
+ios
+dist
+build
+coverage
+.history
+.env*
+!.env*.example

@@ -1,0 +1,25 @@
+diff --git a/expo-module-gradle-plugin/build.gradle.kts b/expo-module-gradle-plugin/build.gradle.kts
+index 837bb4ff6a6ea984c7f78f90cf131be46d3e92fa..758dd58e6a3c7c8b3660097728394707c1dab80c 100644
+--- a/expo-module-gradle-plugin/build.gradle.kts
++++ b/expo-module-gradle-plugin/build.gradle.kts
+@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+ 
+ plugins {
+-  kotlin("jvm") version "2.1.20"
++  kotlin("jvm") version "2.2.0"
+   id("java-gradle-plugin")
+ }
+ 
+diff --git a/expo-module-gradle-plugin/src/main/kotlin/expo/modules/plugin/android/AndroidLibraryExtension.kt b/expo-module-gradle-plugin/src/main/kotlin/expo/modules/plugin/android/AndroidLibraryExtension.kt
+index 9bfae8d7961d6f63c1b17c1b0d4f01557e15a424..c382478e9dd8a84b7945f2a3550a37a2e96169c1 100644
+--- a/expo-module-gradle-plugin/src/main/kotlin/expo/modules/plugin/android/AndroidLibraryExtension.kt
++++ b/expo-module-gradle-plugin/src/main/kotlin/expo/modules/plugin/android/AndroidLibraryExtension.kt
+@@ -6,7 +6,6 @@ internal fun LibraryExtension.applySDKVersions(compileSdk: Int, minSdk: Int, tar
+   this.compileSdk = compileSdk
+   defaultConfig {
+     this@defaultConfig.minSdk = minSdk
+-    this@defaultConfig.targetSdk = targetSdk
+   }
+ }
+ 

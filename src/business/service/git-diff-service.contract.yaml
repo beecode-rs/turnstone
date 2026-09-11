@@ -1,0 +1,26 @@
+subject: GitDiffService
+module: ./git-diff-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params:
+        - {}
+      result: {}
+methods:
+  _toContextArg:
+    terms:
+      - constructorParams:
+          - {}
+        params:
+          - scope: changes
+        result: '-U3'
+      - constructorParams:
+          - {}
+        params:
+          - scope: full
+        result: '-U1000000'
+      - constructorParams:
+          - {}
+        params:
+          - scope: bogus
+        error: Unsupported git diff scope

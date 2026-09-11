@@ -1,0 +1,61 @@
+subject: BinaryPreviewService
+module: ./binary-preview-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  plan:
+    terms:
+      - constructorParams: []
+        params:
+          - fileName: photo.png
+            size: 1024
+        result:
+          kind: image
+          size: 1024
+          status: ready
+      - constructorParams: []
+        params:
+          - fileName: favicon.ico
+            size: 33554432
+        result:
+          kind: icon
+          size: 33554432
+          status: ready
+      - constructorParams: []
+        params:
+          - fileName: document.pdf
+            size: 33554433
+        result:
+          kind: pdf
+          size: 33554433
+          status: exceeds-cap
+      - constructorParams: []
+        params:
+          - fileName: icon.svg
+            size: 2048
+        result:
+          kind: svg
+          size: 2048
+          status: ready
+      - constructorParams: []
+        params:
+          - fileName: icon.svg
+            isSvgPreviewDisabled: true
+            size: 2048
+        result:
+          status: unsupported
+      - constructorParams: []
+        params:
+          - fileName: main.ts
+            size: 4096
+        result:
+          status: unsupported
+      - constructorParams: []
+        params:
+          - fileName: .gitignore
+            size: 128
+        result:
+          status: unsupported

@@ -1,0 +1,127 @@
+subject: languageUtil
+module: ./language-util.ts
+subjectType: function
+methods:
+  fromFileName:
+    terms:
+      - params:
+          - fileName: Dockerfile
+        result: dockerfile
+      - params:
+          - fileName: dockerfile
+        result: dockerfile
+      - params:
+          - fileName: Makefile
+        result: makefile
+      - params:
+          - fileName: CMakeLists.txt
+        result: cmake
+      - params:
+          - fileName: /src/build/Jenkinsfile
+        result: groovy
+      - params:
+          - fileName: main.ts
+        result: null
+      - params:
+          - fileName: ''
+        result: null
+  fromExtension:
+    terms:
+      - params:
+          - fileName: main.ts
+        result: typescript
+      - params:
+          - fileName: app.py
+        result: python
+      - params:
+          - fileName: /src/app/components/App.tsx
+        result: typescript
+      - params:
+          - fileName: styles.SCSS
+        result: scss
+      - params:
+          - fileName: index.jsx
+        result: javascript
+      - params:
+          - fileName: build.gradle
+        result: gradle
+      - params:
+          - fileName: notes.md
+        result: markdown
+      - params:
+          - fileName: no-extension
+        result: null
+      - params:
+          - fileName: .gitignore
+        result: null
+      - params:
+          - fileName: archive.tar.gz
+        result: null
+  fromShebangLine:
+    terms:
+      - params:
+          - line: '#!/usr/bin/env python3'
+        result: python
+      - params:
+          - line: '#!/bin/bash'
+        result: bash
+      - params:
+          - line: '#!/usr/bin/env -S deno run'
+        result: typescript
+      - params:
+          - line: '#!/usr/bin/python3.12'
+        result: python
+      - params:
+          - line: '#!/usr/bin/Rscript'
+        result: r
+      - params:
+          - line: '#!/usr/bin/env node'
+        result: javascript
+      - params:
+          - line: 'logger.info(1)'
+        result: null
+      - params:
+          - line: '#!'
+        result: null
+      - params:
+          - line: '#!/usr/bin/env'
+        result: null
+  fromShebang:
+    terms:
+      - params:
+          - headBytes: [35, 33, 47, 117, 115, 114, 47, 98, 105, 110, 47, 101, 110, 118, 32, 112, 121, 116, 104, 111, 110, 51, 10]
+        result: python
+      - params:
+          - headBytes: [35, 33, 47, 98, 105, 110, 47, 98, 97, 115, 104, 10]
+        result: bash
+      - params:
+          - headBytes: [35, 33, 47, 117, 115, 114, 47, 98, 105, 110, 47, 101, 110, 118, 32, 45, 83, 32, 100, 101, 110, 111, 32, 114, 117, 110, 10]
+        result: typescript
+      - params:
+          - headBytes: [99, 111, 110, 115, 111, 108, 101, 46, 108, 111, 103, 40, 49, 41, 10]
+        result: null
+      - params:
+          - headBytes: []
+        result: null
+  detectLanguage:
+    terms:
+      - params:
+          - fileName: Dockerfile
+        result: dockerfile
+      - params:
+          - fileName: Makefile
+            headBytes: [35, 33, 47, 98, 105, 110, 47, 98, 97, 115, 104, 10]
+        result: makefile
+      - params:
+          - fileName: tool.zzz
+            headBytes: [35, 33, 47, 98, 105, 110, 47, 98, 97, 115, 104, 10]
+        result: bash
+      - params:
+          - fileName: run.py
+        result: python
+      - params:
+          - fileName: script.sh
+        result: bash
+      - params:
+          - fileName: data.unknownext
+        result: plaintext

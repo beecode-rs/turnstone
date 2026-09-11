@@ -1,0 +1,33 @@
+subject: treeExpansionUtil
+module: ./tree-expansion-util.ts
+subjectType: function
+methods:
+  toExpandedPathsList:
+    terms:
+      - params:
+          - expandedPaths: {}
+        result: []
+      - params:
+          - expandedPaths:
+              '/srv/app': true
+        result: ['/srv/app']
+      - params:
+          - expandedPaths:
+              '/srv/app': false
+              '/srv/app/src': true
+              '/srv/app/src/lib': true
+        result: ['/srv/app/src', '/srv/app/src/lib']
+  toExpandedPathsMap:
+    terms:
+      - params:
+          - paths: []
+        result: {}
+      - params:
+          - paths: ['/srv/app/src']
+        result:
+          '/srv/app/src': true
+      - params:
+          - paths: ['/srv/app/src', '/srv/app/src', '/srv/app']
+        result:
+          '/srv/app': true
+          '/srv/app/src': true

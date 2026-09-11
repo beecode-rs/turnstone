@@ -1,0 +1,15 @@
+diff --git a/build/src/start/server/metro/withMetroMultiPlatform.js b/build/src/start/server/metro/withMetroMultiPlatform.js
+index 1a9c501e75f7d809670706eea4218de90556d1d3..0f5f1383901b77ab4b25792e918941885206d8d9 100644
+--- a/build/src/start/server/metro/withMetroMultiPlatform.js
++++ b/build/src/start/server/metro/withMetroMultiPlatform.js
+@@ -176,7 +176,9 @@ function withWebPolyfills(config, { getMetroBundler }) {
+         ];
+         if (ctx.platform === 'web') {
+             try {
+-                const rnGetPolyfills = require('react-native/rn-get-polyfills');
++                // TODO: remove when upgrading to expo SDK 58. React Native 0.87 removed the public
++                // `react-native/rn-get-polyfills` API; this backports SDK 58's direct require.
++                const rnGetPolyfills = require('@react-native/js-polyfills');
+                 return [
+                     ...virtualModulesPolyfills,
+                     // Ensure that the error-guard polyfill is included in the web polyfills to

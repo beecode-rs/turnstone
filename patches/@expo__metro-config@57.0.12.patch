@@ -1,0 +1,15 @@
+diff --git a/build/ExpoMetroConfig.js b/build/ExpoMetroConfig.js
+index 2d200233b9838a29a1f9e2c5b7fa0ff0b8523adf..31615432d20b22344e30cf84dac9c550796c88ad 100644
+--- a/build/ExpoMetroConfig.js
++++ b/build/ExpoMetroConfig.js
+@@ -295,7 +295,9 @@ function getDefaultConfig(projectRoot, { mode, isCSSEnabled = true, unstable_bef
+                 if (!platform) {
+                     return [];
+                 }
+-                return require(path_1.default.join(getReactNativeHostPath(projectRoot, platform), 'rn-get-polyfills'))();
++                // TODO: remove when upgrading to expo SDK 58. React Native 0.87 removed the public
++                // `react-native/rn-get-polyfills` API; this backports SDK 58's direct require.
++                return require('@react-native/js-polyfills')();
+             },
+         },
+         server: {

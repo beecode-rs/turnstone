@@ -1,0 +1,185 @@
+subject: gitStatusParseUtil
+module: ./git-status-parse-util.ts
+subjectType: function
+methods:
+  parseStatusLines:
+    terms:
+      - params:
+          - lines: ['# branch.oid 3c0e5b7a9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f', '# branch.head main']
+        result:
+          branch:
+            ahead: 0
+            behind: 0
+            head: main
+            oid: 3c0e5b7a9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f
+            upstream: null
+          changes: []
+      - params:
+          - lines: ['# branch.oid f1f2f3f4', '# branch.head feature/search', '# branch.upstream origin/feature/search', '# branch.ab +3 -12']
+        result:
+          branch:
+            ahead: 3
+            behind: 12
+            head: feature/search
+            oid: f1f2f3f4
+            upstream: origin/feature/search
+          changes: []
+      - params:
+          - lines: ['1 .M N... 100644 100644 100644 abc123 def456 src/app.ts']
+        result:
+          branch: null
+          changes:
+            - indexStatus: .
+              origPath: null
+              path: src/app.ts
+              type: changed
+              worktreeStatus: M
+      - params:
+          - lines: ['1 MM N... 100644 100644 100644 abc123 def456 src/lib/util.ts']
+        result:
+          branch: null
+          changes:
+            - indexStatus: M
+              origPath: null
+              path: src/lib/util.ts
+              type: changed
+              worktreeStatus: M
+      - params:
+          - lines: ["2 R. N... 100644 100644 100644 abc123 def456 R100 src/new-name.ts\told-name.ts"]
+        result:
+          branch: null
+          changes:
+            - indexStatus: R
+              origPath: old-name.ts
+              path: src/new-name.ts
+              type: renamed
+              worktreeStatus: .
+      - params:
+          - lines: ['? notes.tmp']
+        result:
+          branch: null
+          changes:
+            - indexStatus: null
+              origPath: null
+              path: notes.tmp
+              type: untracked
+              worktreeStatus: null
+      - params:
+          - lines: ['! build/output.log']
+        result:
+          branch: null
+          changes:
+            - indexStatus: null
+              origPath: null
+              path: build/output.log
+              type: ignored
+              worktreeStatus: null
+      - params:
+          - lines: ['# branch.oid deadbeef01', '# branch.head main', '# branch.upstream origin/main', '# branch.ab +0 -0']
+        result:
+          branch:
+            ahead: 0
+            behind: 0
+            head: main
+            oid: deadbeef01
+            upstream: origin/main
+          changes: []
+      - params:
+          - lines:
+              - '# branch.oid 1111111111'
+              - '# branch.head main'
+              - '# branch.ab +1 -2'
+              - '1 .M N... 100644 100644 100644 h1 h2 src/a.ts'
+              - '1 MM N... 100644 100644 100644 h1 h2 src/b.ts'
+              - "2 R. N... 100644 100644 100644 h1 h2 R90 src/c.ts\torig/c.ts"
+              - 'u AA N... 100644 100644 100644 100644 h1 h2 h3 conflict.txt'
+              - '? new-file.ts'
+              - '! ignored.log'
+        result:
+          branch:
+            ahead: 1
+            behind: 2
+            head: main
+            oid: '1111111111'
+            upstream: null
+          changes:
+            - indexStatus: .
+              origPath: null
+              path: src/a.ts
+              type: changed
+              worktreeStatus: M
+            - indexStatus: M
+              origPath: null
+              path: src/b.ts
+              type: changed
+              worktreeStatus: M
+            - indexStatus: R
+              origPath: orig/c.ts
+              path: src/c.ts
+              type: renamed
+              worktreeStatus: .
+            - indexStatus: A
+              origPath: null
+              path: conflict.txt
+              type: unmerged
+              worktreeStatus: A
+            - indexStatus: null
+              origPath: null
+              path: new-file.ts
+              type: untracked
+              worktreeStatus: null
+            - indexStatus: null
+              origPath: null
+              path: ignored.log
+              type: ignored
+              worktreeStatus: null
+      - params:
+          - lines: ['1 .M N... 100644 100644 100644 h1 h2 my file with spaces.txt']
+        result:
+          branch: null
+          changes:
+            - indexStatus: .
+              origPath: null
+              path: my file with spaces.txt
+              type: changed
+              worktreeStatus: M
+      - params:
+          - lines: ["2 R. N... 100644 100644 100644 h1 h2 R85 new name.ts\told name.ts"]
+        result:
+          branch: null
+          changes:
+            - indexStatus: R
+              origPath: old name.ts
+              path: new name.ts
+              type: renamed
+              worktreeStatus: .
+      - params:
+          - lines: []
+        result:
+          branch: null
+          changes: []
+      - params:
+          - lines: ['# branch.oid (initial)', '# branch.head main']
+        result:
+          branch:
+            ahead: 0
+            behind: 0
+            head: main
+            oid: (initial)
+            upstream: null
+          changes: []
+      - params:
+          - lines: ['# branch.oid 9a8b7c6d', '# branch.head (detached)', 'garbage line without shape', '? real-file.ts']
+        result:
+          branch:
+            ahead: 0
+            behind: 0
+            head: (detached)
+            oid: 9a8b7c6d
+            upstream: null
+          changes:
+            - indexStatus: null
+              origPath: null
+              path: real-file.ts
+              type: untracked
+              worktreeStatus: null

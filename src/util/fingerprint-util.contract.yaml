@@ -1,0 +1,20 @@
+subject: fingerprintUtil
+module: ./fingerprint-util.ts
+subjectType: function
+methods:
+  sha256Fingerprint:
+    terms:
+      - params:
+          - hostKey: []
+        result: SHA256:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU
+      - params:
+          - hostKey: [97, 98, 99]
+        result: SHA256:ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0
+      - params:
+          - hostKey: [0, 1, 2, 3, 255, 254]
+        result: SHA256:lJ+r08puwMR137odgVdk6Hmo8sh9YN11ENZGowJ2R98
+      - params:
+          - hostKey:
+              [116, 117, 114, 110, 115, 116, 111, 110, 101, 45, 104, 111, 115, 116, 45, 107, 101, 121, 45, 118, 101, 99,
+              116, 111, 114]
+        result: SHA256:QZl7RZfDXTAJo72gTreBJYGnzjq4LZjoORivJqfmbpw

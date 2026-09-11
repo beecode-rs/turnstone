@@ -1,0 +1,172 @@
+subject: FileNestingPreferenceService
+module: ./file-nesting-preference-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  parsePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - value: '{"isEnabled":true,"patterns":[{"parent":"*.ts","children":["${capture}.test.ts"]}]}'
+        result:
+          isEnabled: true
+          patterns:
+            - children: ['${capture}.test.ts']
+              parent: '*.ts'
+      - constructorParams: []
+        params:
+          - value: '{"isEnabled":true,"patterns":[]}'
+        result:
+          isEnabled: true
+          patterns: []
+      - constructorParams: []
+        params:
+          - value: null
+        result:
+          isEnabled: false
+          patterns:
+            - children: ['${capture}.js', '${capture}.test.ts', '${capture}.contract.yaml']
+              parent: '*.ts'
+            - children: ['${capture}.js.map', '${capture}.min.js', '${capture}.d.ts', '${capture}.d.ts.map']
+              parent: '*.js'
+            - children: ['${capture}.js']
+              parent: '*.jsx'
+            - children: ['${capture}.ts', '${capture}.test.tsx', '${capture}.stories.tsx', '${capture}.module.scss']
+              parent: '*.tsx'
+            - children: ['tsconfig.*.json']
+              parent: tsconfig.json
+            - children: [package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock]
+              parent: package.json
+            - children: ['vitest.config.*.ts']
+              parent: vitest.config.ts
+            - children: ['.env*']
+              parent: .env
+      - constructorParams: []
+        params:
+          - value: not-json
+        result:
+          isEnabled: false
+          patterns:
+            - children: ['${capture}.js', '${capture}.test.ts', '${capture}.contract.yaml']
+              parent: '*.ts'
+            - children: ['${capture}.js.map', '${capture}.min.js', '${capture}.d.ts', '${capture}.d.ts.map']
+              parent: '*.js'
+            - children: ['${capture}.js']
+              parent: '*.jsx'
+            - children: ['${capture}.ts', '${capture}.test.tsx', '${capture}.stories.tsx', '${capture}.module.scss']
+              parent: '*.tsx'
+            - children: ['tsconfig.*.json']
+              parent: tsconfig.json
+            - children: [package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock]
+              parent: package.json
+            - children: ['vitest.config.*.ts']
+              parent: vitest.config.ts
+            - children: ['.env*']
+              parent: .env
+      - constructorParams: []
+        params:
+          - value: '{"isEnabled":"yes","patterns":[]}'
+        result:
+          isEnabled: false
+          patterns:
+            - children: ['${capture}.js', '${capture}.test.ts', '${capture}.contract.yaml']
+              parent: '*.ts'
+            - children: ['${capture}.js.map', '${capture}.min.js', '${capture}.d.ts', '${capture}.d.ts.map']
+              parent: '*.js'
+            - children: ['${capture}.js']
+              parent: '*.jsx'
+            - children: ['${capture}.ts', '${capture}.test.tsx', '${capture}.stories.tsx', '${capture}.module.scss']
+              parent: '*.tsx'
+            - children: ['tsconfig.*.json']
+              parent: tsconfig.json
+            - children: [package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock]
+              parent: package.json
+            - children: ['vitest.config.*.ts']
+              parent: vitest.config.ts
+            - children: ['.env*']
+              parent: .env
+      - constructorParams: []
+        params:
+          - value: '{"patterns":[]}'
+        result:
+          isEnabled: false
+          patterns:
+            - children: ['${capture}.js', '${capture}.test.ts', '${capture}.contract.yaml']
+              parent: '*.ts'
+            - children: ['${capture}.js.map', '${capture}.min.js', '${capture}.d.ts', '${capture}.d.ts.map']
+              parent: '*.js'
+            - children: ['${capture}.js']
+              parent: '*.jsx'
+            - children: ['${capture}.ts', '${capture}.test.tsx', '${capture}.stories.tsx', '${capture}.module.scss']
+              parent: '*.tsx'
+            - children: ['tsconfig.*.json']
+              parent: tsconfig.json
+            - children: [package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock]
+              parent: package.json
+            - children: ['vitest.config.*.ts']
+              parent: vitest.config.ts
+            - children: ['.env*']
+              parent: .env
+      - constructorParams: []
+        params:
+          - value: '{"isEnabled":true,"patterns":[{"parent":"","children":["a"]}]}'
+        result:
+          isEnabled: false
+          patterns:
+            - children: ['${capture}.js', '${capture}.test.ts', '${capture}.contract.yaml']
+              parent: '*.ts'
+            - children: ['${capture}.js.map', '${capture}.min.js', '${capture}.d.ts', '${capture}.d.ts.map']
+              parent: '*.js'
+            - children: ['${capture}.js']
+              parent: '*.jsx'
+            - children: ['${capture}.ts', '${capture}.test.tsx', '${capture}.stories.tsx', '${capture}.module.scss']
+              parent: '*.tsx'
+            - children: ['tsconfig.*.json']
+              parent: tsconfig.json
+            - children: [package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock]
+              parent: package.json
+            - children: ['vitest.config.*.ts']
+              parent: vitest.config.ts
+            - children: ['.env*']
+              parent: .env
+      - constructorParams: []
+        params:
+          - value: '{"isEnabled":true,"patterns":[{"parent":"*.ts","children":[""]}]}'
+        result:
+          isEnabled: false
+          patterns:
+            - children: ['${capture}.js', '${capture}.test.ts', '${capture}.contract.yaml']
+              parent: '*.ts'
+            - children: ['${capture}.js.map', '${capture}.min.js', '${capture}.d.ts', '${capture}.d.ts.map']
+              parent: '*.js'
+            - children: ['${capture}.js']
+              parent: '*.jsx'
+            - children: ['${capture}.ts', '${capture}.test.tsx', '${capture}.stories.tsx', '${capture}.module.scss']
+              parent: '*.tsx'
+            - children: ['tsconfig.*.json']
+              parent: tsconfig.json
+            - children: [package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock]
+              parent: package.json
+            - children: ['vitest.config.*.ts']
+              parent: vitest.config.ts
+            - children: ['.env*']
+              parent: .env
+  serializePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - preference:
+              isEnabled: false
+              patterns: []
+        result: '{"isEnabled":false,"patterns":[]}'
+      - constructorParams: []
+        params:
+          - preference:
+              isEnabled: true
+              patterns:
+                - children: ['${capture}.test.ts']
+                  parent: '*.ts'
+        result: '{"isEnabled":true,"patterns":[{"children":["${capture}.test.ts"],"parent":"*.ts"}]}'

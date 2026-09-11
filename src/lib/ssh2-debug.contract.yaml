@@ -1,0 +1,38 @@
+subject: Ssh2Debug
+module: ./ssh2-debug.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  toHandshakeFailureHint:
+    terms:
+      - constructorParams: []
+        params:
+          - firstChunkHex: null
+            host: 10.0.2.2
+            port: 22
+            receivedBytes: 0
+        result: >-
+          10.0.2.2:22 accepted the TCP connection but sent no SSH banner - it
+          is likely not an SSH server, a firewall or middlebox is interfering,
+          or the connection was closed before the server responded
+      - constructorParams: []
+        params:
+          - firstChunkHex: 485454502f312e31
+            host: 192.168.1.10
+            port: 4022
+            receivedBytes: 137
+        result: >-
+          192.168.1.10:4022 sent 137 bytes of non-SSH data starting with
+          485454502f312e31 - the target is not an SSH server on this port
+      - constructorParams: []
+        params:
+          - firstChunkHex: 5353482d322e302d4f70656e535348
+            host: example.com
+            port: 22
+            receivedBytes: 84
+        result: >-
+          example.com:22 sent an SSH banner (84 bytes received) but the
+          handshake did not complete

@@ -1,0 +1,49 @@
+subject: deviceKeyNameUtil
+module: ./device-key-name-util.ts
+subjectType: function
+methods:
+  toComment:
+    terms:
+      - params:
+          - appName: relay
+            deviceName: miloss-iphone
+            platform: ios
+        result: relay-beecode@miloss-iphone-ios
+      - params:
+          - appName: turnstone
+            deviceName: miloss-phone
+            platform: android
+        result: turnstone-beecode@miloss-phone-android
+      - params:
+          - appName: turnstone
+            deviceName: device
+            platform: web
+        result: turnstone-beecode@device-web
+  toPublicKeyWithComment:
+    terms:
+      - params:
+          - comment: new-name
+            publicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123 old-name
+        result: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123 new-name
+      - params:
+          - comment: 'Relay-beecode@My iPhone-ios'
+            publicKey: '  ssh-ed25519   AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123   old  '
+        result: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleBlob123 Relay-beecode@My iPhone-ios
+      - params:
+          - comment: plain
+            publicKey: ssh-ed25519 AAAABlob
+        result: ssh-ed25519 AAAABlob plain
+  toSanitizedName:
+    terms:
+      - params: ['Relay']
+        result: relay
+      - params: ["Milos's iPhone"]
+        result: miloss-iphone
+      - params: ['  Multiple   Spaces  ']
+        result: multiple-spaces
+      - params: ['UPPER-Case_123!']
+        result: uppercase123
+      - params: ['!!!']
+        result: ''
+      - params: ['']
+        result: ''

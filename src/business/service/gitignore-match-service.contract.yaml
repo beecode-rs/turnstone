@@ -1,0 +1,129 @@
+subject: GitignoreMatchService
+module: ./gitignore-match-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  toLines:
+    terms:
+      - constructorParams: []
+        params:
+          - content: "# comment\r\n\r\n*.log\r\nbuild/\r\n"
+        result: ['*.log', build/]
+      - constructorParams: []
+        params:
+          - content: ''
+        result: []
+      - constructorParams: []
+        params:
+          - content: "node_modules\n dist\n"
+        result: [node_modules, ' dist']
+  isEntryIgnored:
+    terms:
+      - constructorParams: []
+        params:
+          - entryName: notes.txt
+            gitignoreContentByPath: {}
+            isDir: false
+            parentPath: /project
+        result: false
+      - constructorParams: []
+        params:
+          - entryName: debug.log
+            gitignoreContentByPath:
+              /project: '*.log'
+            isDir: false
+            parentPath: /project
+        result: true
+      - constructorParams: []
+        params:
+          - entryName: readme.md
+            gitignoreContentByPath:
+              /project: '*.log'
+            isDir: false
+            parentPath: /project
+        result: false
+      - constructorParams: []
+        params:
+          - entryName: build
+            gitignoreContentByPath:
+              /project: build/
+            isDir: true
+            parentPath: /project
+        result: true
+      - constructorParams: []
+        params:
+          - entryName: build
+            gitignoreContentByPath:
+              /project: build/
+            isDir: false
+            parentPath: /project
+        result: false
+      - constructorParams: []
+        params:
+          - entryName: dist
+            gitignoreContentByPath:
+              /project: /dist
+            isDir: true
+            parentPath: /project
+        result: true
+      - constructorParams: []
+        params:
+          - entryName: dist
+            gitignoreContentByPath:
+              /project: /dist
+            isDir: true
+            parentPath: /project/src
+        result: false
+      - constructorParams: []
+        params:
+          - entryName: node_modules
+            gitignoreContentByPath:
+              /project: node_modules
+            isDir: true
+            parentPath: /project/src
+        result: true
+      - constructorParams: []
+        params:
+          - entryName: keep.log
+            gitignoreContentByPath:
+              /project: "*.log\n!keep.log"
+            isDir: false
+            parentPath: /project
+        result: false
+      - constructorParams: []
+        params:
+          - entryName: tempfile
+            gitignoreContentByPath:
+              /project: temp*
+              /project/src: '!tempfile'
+            isDir: false
+            parentPath: /project/src
+        result: false
+      - constructorParams: []
+        params:
+          - entryName: tempother
+            gitignoreContentByPath:
+              /project: temp*
+              /project/src: '!tempfile'
+            isDir: false
+            parentPath: /project/src
+        result: true
+      - constructorParams: []
+        params:
+          - entryName: secrets.key
+            gitignoreContentByPath:
+              /: secrets.key
+            isDir: false
+            parentPath: /
+        result: true
+      - constructorParams: []
+        params:
+          - entryName: notes.txt
+            gitignoreContentByPath:
+              /project: null
+            isDir: false
+            parentPath: /project
+        result: false
