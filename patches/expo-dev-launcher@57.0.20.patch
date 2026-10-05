@@ -11,3 +11,103 @@ index 0b097aa696610583416048eddfb2fbef2c6db869..737f78c04f28c57cd16686984c348ad4
    id("java-gradle-plugin")
  }
  
+diff --git a/ios/Headers/RCTCxxBridge+Private.h b/ios/Headers/RCTCxxBridge+Private.h
+deleted file mode 100644
+index 69ac4686296c30c243027f8c2a8948c60077c9e8..0000000000000000000000000000000000000000
+diff --git a/ios/ReactDelegateHandler/ExpoDevLauncherReactDelegateHandler.swift b/ios/ReactDelegateHandler/ExpoDevLauncherReactDelegateHandler.swift
+index c34857a14cd8e9163a2b9cf1d76f36884a496e5a..9aadc4ec9ebe7f42596424f99f94e54e880d6cbf 100644
+--- a/ios/ReactDelegateHandler/ExpoDevLauncherReactDelegateHandler.swift
++++ b/ios/ReactDelegateHandler/ExpoDevLauncherReactDelegateHandler.swift
+@@ -92,13 +92,11 @@ public class ExpoDevLauncherReactDelegateHandler: ExpoReactDelegateHandler, EXDe
+ 
+     self.reactNativeFactory = reactDelegate.reactNativeFactory as? RCTReactNativeFactory
+ 
+-    // Reset rctAppDelegate so we can relaunch the app
+-    if RCTIsNewArchEnabled() {
+-      self.reactNativeFactory?.rootViewFactory.setValue(nil, forKey: "_reactHost")
+-    } else {
+-      self.reactNativeFactory?.bridge = nil
+-      self.reactNativeFactory?.rootViewFactory.bridge = nil
+-    }
++    // Reset rctAppDelegate so we can relaunch the app.
++    // [turnstone] react-native 0.87 removed the legacy `bridge` properties from
++    // `RCTReactNativeFactory`/`RCTRootViewFactory`; only the new-arch reset
++    // remains (new arch is the only arch on 0.87).
++    self.reactNativeFactory?.rootViewFactory.setValue(nil, forKey: "_reactHost")
+ 
+     #if RCT_DEV_MENU
+     // Set core dev menu configuration to disable shortcuts and shake gesture
+diff --git a/ios/ReactNative/EXDevLauncherRedBoxInterceptor.swift b/ios/ReactNative/EXDevLauncherRedBoxInterceptor.swift
+index 3a8019b5c202749ead5664645d77baf0d01d29ac..a23f3fe854b750bba0e664ac4cb9cb8eb78eceb9 100644
+--- a/ios/ReactNative/EXDevLauncherRedBoxInterceptor.swift
++++ b/ios/ReactNative/EXDevLauncherRedBoxInterceptor.swift
+@@ -7,63 +7,11 @@ public class EXDevLauncherRedBoxInterceptor: NSObject {
+   @objc static let customRedBox = EXDevLauncherRedBox()
+ 
+   @objc
+-  public static var isInstalled: Bool = false {
+-    willSet {
+-      if isInstalled != newValue {
+-        swizzle()
+-      }
+-    }
+-  }
+-
+-  static private func swizzle() {
+-    EXDevLauncherUtils.swizzle(
+-      selector: #selector(RCTCxxBridge.module(forName:)),
+-      withSelector: #selector(RCTCxxBridge.EXDevLauncher_module(forName:)),
+-      forClass: RCTCxxBridge.self
+-    )
+-
+-    EXDevLauncherUtils.swizzle(
+-      selector: #selector(RCTCxxBridge.module(forName:lazilyLoadIfNecessary:)),
+-      withSelector: #selector(RCTCxxBridge.EXDevLauncher_module(forName:lazilyLoadIfNecessary:)),
+-      forClass: RCTCxxBridge.self
+-    )
+-
+-    EXDevLauncherUtils.swizzle(
+-      selector: #selector(RCTCxxBridge.module(for:)),
+-      withSelector: #selector(RCTCxxBridge.EXDevLauncher_module(forClass:)),
+-      forClass: RCTCxxBridge.self
+-    )
+-  }
++  public static var isInstalled: Bool = false
+ }
+ 
+-extension RCTCxxBridge {
+-  @objc
+-  func EXDevLauncher_module(forName name: String) -> Any? {
+-    let orginalModule = self.EXDevLauncher_module(forName: name)
+-    return replaceRedBox(orginalModule)
+-  }
+-
+-  @objc
+-  func EXDevLauncher_module(forName name: String, lazilyLoadIfNecessary lazilyLoad: Bool) -> Any? {
+-    let orginalModule = self.EXDevLauncher_module(forName: name, lazilyLoadIfNecessary: lazilyLoad)
+-    return replaceRedBox(orginalModule)
+-  }
+-
+-  @objc
+-  func EXDevLauncher_module(forClass clazz: Any) -> Any? {
+-    let orginalModule = self.EXDevLauncher_module(forClass: clazz)
+-    return replaceRedBox(orginalModule)
+-  }
+-
+-  @objc
+-  private func replaceRedBox(_ module: Any?) -> Any? {
+-    if module is RCTRedBox {
+-      let logBox = EXDevLauncher_module(forClass: RCTLogBox.self) as? RCTLogBox
+-      let customRedBox = EXDevLauncherRedBoxInterceptor.customRedBox
+-      customRedBox.register(logBox)
+-      return customRedBox.unsafe_castToRCTRedBox()
+-    }
+-
+-    return module
+-  }
+-}
++// [turnstone] react-native 0.87 removed `RCTCxxBridge` along with the legacy
++// bridge, so the module-lookup swizzling that swapped in the custom RedBox has
++// nothing left to intercept on the bridgeless runtime. The `customRedBox`
++// instance and the `isInstalled` flag are kept so EXDevLauncherErrorManager
++// keeps compiling unchanged.

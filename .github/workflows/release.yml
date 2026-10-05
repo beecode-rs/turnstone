@@ -104,12 +104,17 @@ jobs:
             echo "::error::Tag ${GITHUB_REF_NAME} does not match app.json version ${APP_VERSION} / package.json version ${PKG_VERSION}"
             exit 1
           fi
-      - run: pnpm exec expo prebuild -p ios
+      - run: pnpm exec expo prebuild -p ios --no-install
+      - run: node scripts/patch-ios-build.mjs
+      - run: pod install
+        working-directory: ios
+      - run: node scripts/patch-ios-build.mjs
       - name: Build unsigned release archive
         run: >
           xcodebuild -workspace ios/Turnstone.xcworkspace -scheme Turnstone
           -configuration Release -destination 'generic/platform=iOS' -derivedDataPath ios/build
           CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=
+          CLANG_ENABLE_EXPLICIT_MODULES=NO SWIFT_ENABLE_EXPLICIT_MODULES=NO
           build
       - name: Package unsigned IPA
         run: |
