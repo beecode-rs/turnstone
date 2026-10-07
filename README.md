@@ -1,58 +1,68 @@
 <p align="center">
-  <img src="assets/images/app-icon.png" width="160" alt="Turnstone icon" />
+  <img src="resource/app-image/app-icon.png" width="160" alt="Turnstone icon" />
 </p>
 
 <h1 align="center">Turnstone</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/status-early%20development-yellow" alt="Early development badge" />
-  <img src="https://img.shields.io/badge/platform-Android-blue" alt="Platform badge" />
+  <img src="https://img.shields.io/github/package-json/v/beecode-rs/turnstone?label=version" alt="Version badge" />
+  <img src="https://img.shields.io/badge/status-proof%20of%20concept-orange" alt="Proof of concept badge" />
+  <img src="https://img.shields.io/badge/platform-Android%20%7C%20iOS-blue" alt="Platform badge" />
   <img src="https://img.shields.io/badge/Expo%20SDK-57-000020" alt="Expo SDK badge" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License badge" />
 </p>
 
 <p align="center">
   Made by
-  <a href="https://beecode.rs"><img src="assets/images/beecode-logo.png" width="20" alt="Beecode logo" /></a>
+  <a href="https://beecode.rs"><img src="resource/brand/beecode-logo.png" width="20" alt="Beecode logo" /></a>
   <a href="https://beecode.rs"><strong>Beecode</strong></a>
 </p>
 
-A small Expo (React Native) app for Android that browses and reads files on a remote server over SSH. It is strictly read-only. It does six things:
+Turnstone is a small Expo (React Native) app for Android and iOS that browses and reads files on a remote server over SSH. It is strictly read-only. It does six things:
 
-- **Servers**: manage any number of SSH servers (label, host, port, username) with password or ed25519 key auth; secrets stay in the device secure store, and host keys are verified TOFU-style on first connect.
-- **Browse**: the remote file tree over SFTP, with file-type icons, configurable nesting and row density, and toggles to hide dot files and gitignored files.
-- **View**: code with syntax highlighting (word-wrap and line-number toggles), rendered Markdown, HTML in rendered or source mode, PDF, and binary file previews.
-- **Search**: files on the remote server, with gitignored files filtered out of the results.
-- **Git**: status and diffs of the remote working tree, with a branch bar and diff options.
-- **Watch**: remote change detection; watched files and directories reconcile in the tree and open viewers without a manual refresh (inotify where the host supports it, polling as the fallback).
+- **Servers** — manage any number of SSH servers with password or ed25519 key auth.
+- **Browse** — the remote file tree over SFTP, with file-type icons and filters for dot files and gitignored files.
+- **View** — code with syntax highlighting, rendered Markdown and HTML, PDF, and binary file previews.
+- **Search** — files on the remote server, gitignored files filtered out.
+- **Git** — status and diffs of the remote working tree.
+- **Watch** — remote changes reconciled in the tree and open viewers without a manual refresh.
+
+## Status: Proof of Concept
+
+Turnstone is at **v0.1.0** and still a proof of concept. It was built through rapid AI-assisted iteration ("vibe coding") rather than carefully reviewed engineering, so expect rough edges, missing pieces, and breaking changes without notice. While it remains a POC the version stays on `0.x`; the move out of the POC phase coincides with the major version moving to `1`.
 
 ## Screenshots
 
-| Servers | Projects | File tree |
+| [Servers](resource/docs/features.md#servers) | [Projects](resource/docs/features.md#browsing) | [File tree](resource/docs/features.md#browsing) |
 | :---: | :---: | :---: |
-| <img src="resource/screenshots/server-list-screen.png" width="240" alt="Servers list with a saved SSH server" /> | <img src="resource/screenshots/project-list-screen.png" width="240" alt="Projects list with two project roots on the server" /> | <img src="resource/screenshots/project-tree-view.png" width="240" alt="Remote file tree with file-type icons and a branch bar" /> |
+| <a href="resource/screenshots/server-list-screen.png"><img src="resource/screenshots/server-list-screen.png" width="240" alt="Servers list with a saved SSH server" /></a> | <a href="resource/screenshots/project-list-screen.png"><img src="resource/screenshots/project-list-screen.png" width="240" alt="Projects list with two project roots on the server" /></a> | <a href="resource/screenshots/project-tree-view.png"><img src="resource/screenshots/project-tree-view.png" width="240" alt="Remote file tree with file-type icons and a branch bar" /></a> |
 
-| Markdown source | Rendered Markdown | Git diff |
+| [Markdown source](resource/docs/features.md#viewing-files) | [Rendered Markdown](resource/docs/features.md#viewing-files) | [Git diff](resource/docs/features.md#git) |
 | :---: | :---: | :---: |
-| <img src="resource/screenshots/markdown-code-view.png" width="240" alt="Code viewer showing a Markdown file with line numbers" /> | <img src="resource/screenshots/markdown-rendered-view.png" width="240" alt="Rendered Markdown view" /> | <img src="resource/screenshots/git-diff-view.png" width="240" alt="Git diff view" /> |
+| <a href="resource/screenshots/markdown-code-view.png"><img src="resource/screenshots/markdown-code-view.png" width="240" alt="Code viewer showing a Markdown file with line numbers" /></a> | <a href="resource/screenshots/markdown-rendered-view.png"><img src="resource/screenshots/markdown-rendered-view.png" width="240" alt="Rendered Markdown view" /></a> | <a href="resource/screenshots/git-diff-view.png"><img src="resource/screenshots/git-diff-view.png" width="240" alt="Git diff view" /></a> |
 
-| Open screens drawer | Code viewer, landscape | Code viewer, fullscreen |
+| [Open screens drawer](resource/docs/features.md#browsing) | [Code viewer, landscape](resource/docs/features.md#theming-and-layout) | [Code viewer, fullscreen](resource/docs/features.md#theming-and-layout) |
 | :---: | :---: | :---: |
-| <img src="resource/screenshots/side-menu-open-files.png" width="300" alt="Open screens drawer over the editor in landscape" /> | <img src="resource/screenshots/code-view-landscape.png" width="300" alt="Code viewer in landscape" /> | <img src="resource/screenshots/code-view-fullscreen-landscape.png" width="300" alt="Code viewer fullscreen in landscape" /> |
+| <a href="resource/screenshots/side-menu-open-files.png"><img src="resource/screenshots/side-menu-open-files.png" width="240" alt="Open screens drawer over the editor in landscape" /></a> | <a href="resource/screenshots/code-view-landscape.png"><img src="resource/screenshots/code-view-landscape.png" width="240" alt="Code viewer in landscape" /></a> | <a href="resource/screenshots/code-view-fullscreen-landscape.png"><img src="resource/screenshots/code-view-fullscreen-landscape.png" width="240" alt="Code viewer fullscreen in landscape" /></a> |
 
-## Status: Early Development
+The titles link to each feature's section in [resource/docs/features.md](resource/docs/features.md).
 
-Turnstone is in early development. It was built through rapid AI-assisted iteration rather than carefully reviewed engineering, so expect rough edges, missing pieces, and breaking changes without notice.
+## Features
 
-## Releases
+- **Servers** — manage any number of SSH servers (label, host, port, username) with password or ed25519 key auth; secrets stay in the device secure store and host keys are verified on first connect.
+- **Remote file tree** — browse the server over SFTP with file-type icons, configurable nesting and row density, and toggles to hide dot files and gitignored files.
+- **Syntax-highlighted code** — open source files with word-wrap and line-number toggles and tap-to-highlight line selection.
+- **Rendered Markdown and HTML** — read Markdown rendered or as source, with task lists, clickable local links, and embedded PlantUML and Mermaid diagrams; HTML switches between rendered and source modes.
+- **PDF and binary files** — open PDFs in a viewer and get a preview of binary files.
+- **Diagrams** — render PlantUML (`.puml`) and Mermaid (`.mmd`) files as diagrams in the file viewer.
+- **Remote search** — find files on the server, with gitignored files filtered out of the results.
+- **Git status and diffs** — see status and diffs of the remote working tree, with a branch bar and diff options.
+- **Live watching** — watched files and directories reconcile in the tree and open viewers without a manual refresh (inotify where the host supports it, polling as the fallback).
+- **Reading comfort** — MD3 light/dark theming plus an e-ink theme, landscape orientation, and file-view margin and font-size settings.
 
-Tagged releases are built by CI and published as installable artifacts on the [GitHub Releases](https://github.com/beecode-rs/turnstone/releases) page: a signed Android APK and an unsigned iOS IPA (sideload it yourself; it is not App Store distributed). Builds made locally from source install as "Turnstone (dev)" so a development build is never confused with a release.
+For a deeper look at each feature — settings, edge cases, and how things work under the hood — see [resource/docs/features.md](resource/docs/features.md).
 
-## Read-Only by Design
-
-Turnstone only ever reads from your servers: the device checklist ([docs/VERIFY.md](docs/VERIFY.md)) requires every feature to work end to end against an account with read-only access to the browsed tree, and requires that a full session leaves no modified files behind. Use it with a read-only account; that is what it is built for.
-
-## Feature Status
+## Feature status
 
 Done:
 
@@ -83,30 +93,71 @@ Done:
 - [x] Render Mermaid (`.mmd`) files as diagrams in the file viewer
 - [x] Render PlantUML code blocks embedded in Markdown
 - [x] Render Mermaid code blocks embedded in Markdown
-- [x] in the file view if the file has git changes add a button to jump and see the git diff
-- [x] make rendered Markdown text selectable on device
-- [x] make local links in Markdown clickable and open the file in the file view
-- [x] cloning should work like relay app, don't copy the entity, just open a new add form with prepopulated info and add the ability for user to save or cancel
+- [x] View-git-diff button in the file view when the file has git changes
+- [x] Selectable text in rendered Markdown
+- [x] Clickable local links in rendered Markdown that open the file in the file view
+- [x] Cloning a server opens a prepopulated add form to save or cancel, instead of copying the entry
 
 Planned:
 
-- nothing
+Nothing planned right now.
 
-## Security
+## Download & install
 
-Passwords, private keys, passphrases, and known-host fingerprints stay on the device, stored in the OS secure store, and are sent only to the server they belong to. The app has no analytics or telemetry dependencies.
+Downloads live on the [GitHub Releases](https://github.com/beecode-rs/turnstone/releases) page.
 
-## Development
+### Android
 
-Requires [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io). The full setup, the automated gates, and the manual device checklist live in [resource/docs/development.md](resource/docs/development.md).
+1. Download the `Turnstone-v<version>-android.apk` asset.
+2. Allow installing unknown apps for your browser or file manager (Settings → Apps → Special access → Install unknown apps), then open the APK and confirm the install. Or install over USB: `adb install Turnstone-v<version>-android.apk`.
+3. To update, just install a newer APK over the old one — releases are signed with the same key.
 
-## Architecture
+### iOS
 
-An Expo app layered as business services (connection, tree, search, git, change watching) behind expo-router screen controllers, storage behind DALs, and the ssh2 npm package isolated behind a single `SshTransport` port in `src/lib`. The full layer mapping lives in [docs/architecture-mapping.md](docs/architecture-mapping.md).
+The `Turnstone-v<version>-ios-unsigned.ipa` asset is **unsigned** (no Apple Developer account is involved), so it gets signed with your own Apple ID at install time by a sideload tool:
 
-## Contributing
+- **[AltStore](https://altstore.io)**: add the IPA through AltStore (or AltServer) with your Apple ID.
+- **[Sideloadly](https://sideloadly.io)**: drag the IPA in, sign with your Apple ID, install over USB.
+- On devices with **TrollStore**, the unsigned IPA can be installed directly and permanently.
 
-Issues and pull requests are welcome. Keep the [feature status](#feature-status) in mind: help is most useful on the planned items.
+Caveats: with a free Apple ID the signature lasts 7 days (re-sideload to refresh) and counts against the 3-active-apps limit. Servers and settings live in the app's own storage, and secrets in the OS secure store.
+
+### From source
+
+Requires [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
+
+```bash
+git clone https://github.com/beecode-rs/turnstone.git
+cd turnstone
+pnpm install
+pnpm android
+```
+
+`pnpm android` builds and installs a dev client on a connected Android device or emulator (it appears as "Turnstone (dev)", so a development build is never confused with a release); `pnpm start` then starts the Metro dev server. The full development setup lives in [resource/docs/development.md](resource/docs/development.md).
+
+## Getting started
+
+1. Open the app and add your first server on the Servers screen — a label, host, port, and username, with a password or an ed25519 key.
+2. Connect once and verify the server's host key — it is remembered for future connections.
+3. Add the project root you want to browse, typing a remote path or picking the folder with the folder browser.
+4. Browse the tree and tap a file — code opens with syntax highlighting and Markdown renders.
+
+## Privacy & security
+
+**Passwords, private keys, passphrases, and accepted host keys** stay on your device, stored in the OS secure store, and are sent only to the server they belong to. The app contains no analytics and no telemetry.
+
+Turnstone only ever reads from your servers — use it with a read-only account; that is what it is built for.
+
+## Support & contributing
+
+Found a bug or have an idea? Open an issue on [GitHub](https://github.com/beecode-rs/turnstone/issues) — include the app version, your OS, and the steps to reproduce. Pull requests are welcome too; keep the [feature status](#feature-status) in mind, and open an issue before starting something large.
+
+## For developers
+
+The README covers using the app. To work on it:
+
+- [Development setup](resource/docs/development.md) — prerequisites, daily commands, quality gates
+- [Architecture](resource/docs/architecture.md) — how the source is layered
 
 ## License
 
