@@ -100,7 +100,7 @@ Done:
 
 Planned:
 
-Nothing planned right now.
+- [ ] Biometric lock for the app at startup (fingerprint / face unlock)
 
 ## Download & install
 
