@@ -1,0 +1,34 @@
+subject: BiometricLockPreferenceService
+module: ./biometric-lock-preference-service.ts
+subjectType: class
+constructor:
+  terms:
+    - params: []
+      result: {}
+methods:
+  parsePreference:
+    terms:
+      - constructorParams: []
+        params:
+          - value: 'true'
+        result: true
+      - constructorParams: []
+        params:
+          - value: 'false'
+        result: false
+      - constructorParams: []
+        params:
+          - value: null
+        result: false
+      - constructorParams: []
+        params:
+          - value: ''
+        result: false
+      - constructorParams: []
+        params:
+          - value: 'TRUE'
+        result: false
+      - constructorParams: []
+        params:
+          - value: '1'
+        result: false

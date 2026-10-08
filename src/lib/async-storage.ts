@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 import { type AlwaysOpenDrawerPreferenceStorage } from '#src/business/model/always-open-drawer-preference'
+import { type BiometricLockPreferenceStorage } from '#src/business/model/biometric-lock-preference'
 import { type DisplayCutoutPreferenceStorage } from '#src/business/model/display-cutout-preference'
 import { type DotFilesPreferenceStorage } from '#src/business/model/dot-files-preference'
 import { type FabOpacityPreferenceStorage } from '#src/business/model/fab-opacity-preference'
@@ -25,6 +26,17 @@ export const alwaysOpenDrawerPreferenceStorage: AlwaysOpenDrawerPreferenceStorag
     const { value } = params
 
     return AsyncStorage.setItem(constant.preferenceStorageKey.alwaysOpenDrawer, value)
+  },
+}
+
+export const biometricLockPreferenceStorage: BiometricLockPreferenceStorage = {
+  readPreference: () => {
+    return AsyncStorage.getItem(constant.preferenceStorageKey.biometricLock)
+  },
+  writePreference: (params) => {
+    const { value } = params
+
+    return AsyncStorage.setItem(constant.preferenceStorageKey.biometricLock, value)
   },
 }
 

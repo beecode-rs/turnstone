@@ -12,6 +12,8 @@ import { FontSizeProvider } from '#src/ui-component/code-viewer/font-size-contex
 import { LineNumbersProvider } from '#src/ui-component/code-viewer/line-numbers-context'
 import { ViewMarginProvider } from '#src/ui-component/code-viewer/view-margin-context'
 import { WordWrapProvider } from '#src/ui-component/code-viewer/word-wrap-context'
+import { BiometricLockGate } from '#src/ui-component/biometric-lock-gate'
+import { BiometricLockProvider } from '#src/ui-component/biometric-lock-context'
 import { DisplayCutoutProvider } from '#src/ui-component/display-cutout-context'
 import { FabOpacityProvider } from '#src/ui-component/fab-opacity-context'
 import { FooterProvider } from '#src/ui-component/footer-context'
@@ -45,9 +47,11 @@ const ThemedAppRoot = (): JSX.Element => {
       <ThemeProvider value={navigationTheme}>
         <AnimatedSplashOverlay />
         <KeyboardProvider>
-          <View style={styles.root}>
-            <Stack screenOptions={{ headerShown: false }} />
-          </View>
+          <BiometricLockGate>
+            <View style={styles.root}>
+              <Stack screenOptions={{ headerShown: false }} />
+            </View>
+          </BiometricLockGate>
         </KeyboardProvider>
       </ThemeProvider>
     </PaperProvider>
@@ -74,7 +78,9 @@ export const RootShell = (): JSX.Element => {
                                   <PlantumlServerProvider>
                                     <FooterProvider>
                                       <FullscreenProvider>
-                                        <ThemedAppRoot />
+                                        <BiometricLockProvider>
+                                          <ThemedAppRoot />
+                                        </BiometricLockProvider>
                                       </FullscreenProvider>
                                     </FooterProvider>
                                   </PlantumlServerProvider>

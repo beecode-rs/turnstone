@@ -97,10 +97,7 @@ Done:
 - [x] Selectable text in rendered Markdown
 - [x] Clickable local links in rendered Markdown that open the file in the file view
 - [x] Cloning a server opens a prepopulated add form to save or cancel, instead of copying the entry
-
-Planned:
-
-- [ ] Biometric lock for the app at startup (fingerprint / face unlock)
+- [x] Biometric lock at app startup (fingerprint / face unlock; off by default, configurable in Settings → Security)
 
 ## Download & install
 

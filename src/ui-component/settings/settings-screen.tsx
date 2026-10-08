@@ -7,6 +7,7 @@ import { ScrollableTabBar, type ScrollableTabBarTab } from '#src/ui-component/sc
 import { FileNestingSettingsTab } from '#src/ui-component/settings/file-nesting-settings-tab'
 import { FileViewSettingsTab } from '#src/ui-component/settings/file-view-settings-tab'
 import { SearchSettingsTab } from '#src/ui-component/settings/search-settings-tab'
+import { SecuritySettingsTab } from '#src/ui-component/settings/security-settings-tab'
 import { SshKeySettingsTab } from '#src/ui-component/settings/ssh-key-settings-tab'
 import { SystemSettingsTab } from '#src/ui-component/settings/system-settings-tab'
 import { TreeViewSettingsTab } from '#src/ui-component/settings/tree-view-settings-tab'
@@ -14,6 +15,7 @@ import { useThemePreference } from '#src/ui-component/theme/theme-context'
 
 const SETTINGS_TABS: readonly ScrollableTabBarTab<SettingsTabKeyMapper>[] = [
   { key: SettingsTabKeyMapper.SYSTEM, label: 'System' },
+  { key: SettingsTabKeyMapper.SECURITY, label: 'Security' },
   { key: SettingsTabKeyMapper.SSH_KEY, label: 'SSH Key' },
   { key: SettingsTabKeyMapper.FILE_VIEW, label: 'File View' },
   { key: SettingsTabKeyMapper.TREE_VIEW, label: 'Tree View' },
@@ -31,6 +33,9 @@ const renderActiveTab = (tabKey: SettingsTabKeyMapper): JSX.Element => {
     }
     case SettingsTabKeyMapper.SEARCH: {
       return <SearchSettingsTab />
+    }
+    case SettingsTabKeyMapper.SECURITY: {
+      return <SecuritySettingsTab />
     }
     case SettingsTabKeyMapper.SSH_KEY: {
       return <SshKeySettingsTab />

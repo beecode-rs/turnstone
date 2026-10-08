@@ -59,6 +59,7 @@
 		"expo-glass-effect": "~57.0.4",
 		"expo-image": "~57.0.5",
 		"expo-linking": "~57.0.11",
+		"expo-local-authentication": "~57.0.3",
 		"expo-router": "~57.0.24",
 		"expo-secure-store": "~57.0.4",
 		"expo-splash-screen": "~57.0.9",
@@ -135,7 +136,8 @@
 			"expo-modules-autolinking@57.0.13": "patches/expo-modules-autolinking@57.0.13.patch",
 			"expo-modules-core@57.0.20": "patches/expo-modules-core@57.0.20.patch",
 			"expo@57.0.26": "patches/expo@57.0.26.patch",
-			"react-native-webview@14.0.1": "patches/react-native-webview@14.0.1.patch"
+			"react-native-webview@14.0.1": "patches/react-native-webview@14.0.1.patch",
+			"react-native-worklets@0.13.0": "patches/react-native-worklets@0.13.0.patch"
 		}
 	}
 }

@@ -1,0 +1,40 @@
+diff --git a/Common/cpp/worklets/SharedItems/UnpackerLoader.h b/Common/cpp/worklets/SharedItems/UnpackerLoader.h
+index 526c63c5c20f6825c83a3112f6df3f18e800fefd..2c4fedd0d341583d6fc32028b6b0679bded71a89 100644
+--- a/Common/cpp/worklets/SharedItems/UnpackerLoader.h
++++ b/Common/cpp/worklets/SharedItems/UnpackerLoader.h
+@@ -51,19 +51,24 @@ class UnpackerLoader {
+   static void installUnpacker(facebook::jsi::Runtime &rt, const CodeUnpacker &unpacker) {
+ #ifndef NDEBUG
+     if (!unpacker.sourceMap.empty()) {
+-      rt.global()
+-          .getPropertyAsFunction(rt, "evalWithSourceMap")
+-          .call(rt, unpacker.code, unpacker.location, unpacker.sourceMap)
+-          .getObject(rt)
+-          .getFunction(rt)
+-          .call(rt);
+-      return;
++      auto valueWithSourceMap =
++          rt.global()
++              .getPropertyAsFunction(rt, "evalWithSourceMap")
++              .call(rt, unpacker.code, unpacker.location, unpacker.sourceMap);
++      if (valueWithSourceMap.isObject()) {
++        valueWithSourceMap.getObject(rt).getFunction(rt).call(rt);
++        return;
++      }
++      // turnstone patch: on RN 0.87 debug builds the source-mapped eval can
++      // complete with a non-object value; fall back to a plain evaluation
+     }
+ #endif // NDEBUG
+-    rt.evaluateJavaScript(std::make_shared<facebook::jsi::StringBuffer>(unpacker.code), unpacker.location)
+-        .getObject(rt)
+-        .getFunction(rt)
+-        .call(rt);
++    auto evaluatedValue =
++        rt.evaluateJavaScript(std::make_shared<facebook::jsi::StringBuffer>(unpacker.code), unpacker.location);
++    if (!evaluatedValue.isObject()) {
++      throw std::runtime_error("[Worklets] Unpacker did not evaluate to a function: " + unpacker.location);
++    }
++    evaluatedValue.getObject(rt).getFunction(rt).call(rt);
+   }
+ 
+   static void installUnpacker(facebook::jsi::Runtime &rt, const BytecodeUnpacker &unpacker) {

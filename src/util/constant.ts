@@ -136,6 +136,7 @@ export const constant = {
   },
   preferenceStorageKey: {
     alwaysOpenDrawer: 'always-open-drawer-preference',
+    biometricLock: 'biometric-lock-preference',
     displayCutout: 'display-cutout-preference',
     dotFiles: 'dot-files-preference',
     fabOpacity: 'fab-opacity-preference',
