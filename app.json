@@ -7,7 +7,7 @@
 			},
 			"package": "com.turnstoneapp",
 			"predictiveBackGestureEnabled": false,
-			"versionCode": 2
+			"versionCode": 3
 		},
 		"experiments": {
 			"reactCompiler": true,
@@ -18,7 +18,7 @@
 		},
 		"icon": "./assets/images/icon.png",
 		"ios": {
-			"buildNumber": "0.2.0",
+			"buildNumber": "0.2.1",
 			"bundleIdentifier": "com.turnstoneapp.ios",
 			"entitlements": {
 				"keychain-access-groups": [
@@ -60,7 +60,7 @@
 		"scheme": "turnstone",
 		"slug": "turnstone",
 		"userInterfaceStyle": "automatic",
-		"version": "0.2.0",
+		"version": "0.2.1",
 		"web": {
 			"favicon": "./assets/images/favicon.png",
 			"output": "single"
