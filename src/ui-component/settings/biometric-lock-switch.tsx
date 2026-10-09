@@ -6,7 +6,7 @@ import { useBiometricLock } from '#src/ui-component/biometric-lock-context'
 
 export const BiometricLockSwitch = (): JSX.Element => {
   const { isBiometricLockEnabled, saveIsBiometricLockEnabled } = useBiometricLock()
-  const [isDeviceCheckInProgress, setIsDeviceCheckInProgress] = useState(false)
+  const [isTurnOnInProgress, setIsTurnOnInProgress] = useState(false)
   const [isSetupNotificationVisible, setIsSetupNotificationVisible] = useState(false)
   const biometricAuthService = useMemo(() => {
     return new BiometricAuthService()
@@ -17,20 +17,24 @@ export const BiometricLockSwitch = (): JSX.Element => {
       await saveIsBiometricLockEnabled(false)
       return
     }
-    setIsDeviceCheckInProgress(true)
+    setIsTurnOnInProgress(true)
     const isDeviceReady = await biometricAuthService.isDeviceBiometricReady()
-    setIsDeviceCheckInProgress(false)
     if (!isDeviceReady) {
+      setIsTurnOnInProgress(false)
       setIsSetupNotificationVisible(true)
       return
     }
-    await saveIsBiometricLockEnabled(true)
+    const isAuthenticated = await biometricAuthService.authenticate({ promptMessage: 'Unlock Turnstone' })
+    if (isAuthenticated) {
+      await saveIsBiometricLockEnabled(true)
+    }
+    setIsTurnOnInProgress(false)
   }
 
   return (
     <>
       <Switch
-        disabled={isDeviceCheckInProgress}
+        disabled={isTurnOnInProgress}
         onValueChange={(nextValue) => {
           void handleValueChange(nextValue)
         }}
