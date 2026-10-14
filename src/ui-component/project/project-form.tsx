@@ -66,6 +66,18 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
     })
   }
 
+  const handleClearName = (): void => {
+    updateField({ nameText: '' })
+  }
+
+  const renderNameClearIcon = (): JSX.Element | undefined => {
+    if (formState.nameText === '') {
+      return undefined
+    }
+
+    return <TextInput.Icon accessibilityLabel="Clear name" icon="close" onPress={handleClearName} />
+  }
+
   const buildBrowseDraft = (): ServerDraft | undefined => {
     if (!props.hostConfig) {
       return undefined
@@ -138,6 +150,7 @@ export const ProjectForm = (props: ProjectFormProps): JSX.Element => {
               updateField({ nameText: text })
             }}
             placeholder="My project"
+            right={renderNameClearIcon()}
             value={formState.nameText}
           />
 
