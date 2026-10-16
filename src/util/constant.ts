@@ -2,6 +2,12 @@ export const constant = {
   activeProject: {
     storageKeyPrefix: 'active-project/',
   },
+  appUpdate: {
+    androidAssetNameRegex: /android/i,
+    apkAssetNameRegex: /\.apk$/i,
+    githubLatestReleaseUrl: 'https://api.github.com/repos/beecode-rs/turnstone/releases/latest',
+    requestTimeoutMs: 10000,
+  },
   authorizedKeys: {
     path: '"$HOME/.ssh/authorized_keys"',
     sshDirPath: '"$HOME/.ssh"',

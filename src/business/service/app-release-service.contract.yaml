@@ -1,0 +1,109 @@
+subject: appReleaseServiceContractHarness
+module: ./__tests__/_app-release-service-contract-harness.ts
+subjectType: function
+methods:
+  findLatestReleaseWhenForbiddenWithoutRateLimitHeader:
+    terms:
+      - params: []
+        result:
+          error:
+            httpStatus: 403
+            kind: http-error
+          release: !undefined
+  findLatestReleaseWhenInvalidBody:
+    terms:
+      - params: []
+        result:
+          error:
+            cause: release body is not valid json
+            kind: invalid-response
+          release: !undefined
+  findLatestReleaseWhenMissingReleaseFields:
+    terms:
+      - params: []
+        result:
+          error:
+            cause: unexpected github release response shape
+            kind: invalid-response
+          release: !undefined
+  findLatestReleaseWhenNetworkError:
+    terms:
+      - params: []
+        result:
+          error:
+            cause: Network request failed
+            kind: network
+          release: !undefined
+  findLatestReleaseWhenNewerRelease:
+    terms:
+      - params: []
+        result:
+          error: !undefined
+          release:
+            androidApkDownloadUrl: https://github.com/beecode-rs/turnstone/releases/download/v0.3.0/Turnstone-v0.3.0-android.apk
+            htmlUrl: https://github.com/beecode-rs/turnstone/releases/tag/v0.3.0
+            tagName: v0.3.0
+  findLatestReleaseWhenNoReleasePublished:
+    terms:
+      - params: []
+        result:
+          error:
+            httpStatus: 404
+            kind: http-error
+          release: !undefined
+  findLatestReleaseWhenRateLimited:
+    terms:
+      - params: []
+        result:
+          error:
+            httpStatus: 403
+            kind: rate-limited
+            rateLimitResetAt: 4102444800000
+          release: !undefined
+  findLatestReleaseWhenServerError:
+    terms:
+      - params: []
+        result:
+          error:
+            httpStatus: 500
+            kind: http-error
+          release: !undefined
+  findLatestReleaseWhenTimedOut:
+    terms:
+      - params: []
+        result:
+          error:
+            cause: The operation was aborted.
+            kind: timeout
+          release: !undefined
+  findLatestReleaseRequestObservation:
+    terms:
+      - params: []
+        result:
+          hasAbortSignal: true
+          headersAccept: application/vnd.github+json
+          result:
+            error: !undefined
+            release:
+              androidApkDownloadUrl: null
+              htmlUrl: https://github.com/beecode-rs/turnstone/releases/tag/v0.3.0
+              tagName: v0.3.0
+          url: https://api.github.com/repos/beecode-rs/turnstone/releases/latest
+  resolveStatusWhenNewerRelease:
+    terms:
+      - params:
+          - currentVersion: 0.2.2
+            release:
+              androidApkDownloadUrl: null
+              htmlUrl: https://github.com/beecode-rs/turnstone/releases/tag/v0.3.0
+              tagName: v0.3.0
+        result: update-available
+  resolveStatusWhenSameRelease:
+    terms:
+      - params:
+          - currentVersion: 0.2.2
+            release:
+              androidApkDownloadUrl: null
+              htmlUrl: https://github.com/beecode-rs/turnstone/releases/tag/v0.3.0
+              tagName: v0.2.2
+        result: up-to-date

@@ -7,6 +7,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { PaperProvider } from 'react-native-paper'
 
 import { deviceKeyUseCase } from '#src/business/use-case/device-key-use-case'
+import { AppUpdateProvider } from '#src/ui-component/app-update-context'
 import { AnimatedSplashOverlay } from '#src/ui-component/animated-icon'
 import { FontSizeProvider } from '#src/ui-component/code-viewer/font-size-context'
 import { LineNumbersProvider } from '#src/ui-component/code-viewer/line-numbers-context'
@@ -79,7 +80,9 @@ export const RootShell = (): JSX.Element => {
                                     <FooterProvider>
                                       <FullscreenProvider>
                                         <BiometricLockProvider>
-                                          <ThemedAppRoot />
+                                          <AppUpdateProvider>
+                                            <ThemedAppRoot />
+                                          </AppUpdateProvider>
                                         </BiometricLockProvider>
                                       </FullscreenProvider>
                                     </FooterProvider>

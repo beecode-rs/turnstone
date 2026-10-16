@@ -5,6 +5,7 @@ import { FabOpacityMenu } from '#src/ui-component/settings/fab-opacity-menu'
 import { FooterSwitch } from '#src/ui-component/settings/footer-switch'
 import { SettingsRow } from '#src/ui-component/settings/settings-row'
 import { SettingsSection } from '#src/ui-component/settings/settings-section'
+import { UpdateCheckRow } from '#src/ui-component/settings/update-check-row'
 import { ThemeSchemeMenu } from '#src/ui-component/theme/theme-scheme-menu'
 import { ThemeStyleMenu } from '#src/ui-component/theme/theme-style-menu'
 
@@ -32,6 +33,7 @@ export const SystemSettingsTab = (): JSX.Element => {
         description="Bottom bar showing the branch and open file"
         label="Hide footer"
       />
+      <UpdateCheckRow />
     </SettingsSection>
   )
 }

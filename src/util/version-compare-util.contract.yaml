@@ -1,0 +1,42 @@
+subject: versionCompareUtil
+module: ./version-compare-util.ts
+subjectType: function
+methods:
+  compare:
+    terms:
+      - params:
+          - left: '0.2.2'
+            right: '0.2.2'
+        result: 0
+      - params:
+          - left: 'v0.3.0'
+            right: '0.2.2'
+        result: 1
+      - params:
+          - left: 'v0.2.2'
+            right: '0.3.0'
+        result: -1
+      - params:
+          - left: '1.2'
+            right: '1.2.0'
+        result: 0
+      - params:
+          - left: '1.10.0'
+            right: '1.9.0'
+        result: 1
+      - params:
+          - left: 'v2'
+            right: '1.9.9'
+        result: 1
+      - params:
+          - left: 'V1.2.3'
+            right: 'v1.2.3'
+        result: 0
+      - params:
+          - left: 'unknown'
+            right: '0.2.2'
+        result: -1
+      - params:
+          - left: ''
+            right: '0.0.1'
+        result: -1

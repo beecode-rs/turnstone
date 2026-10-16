@@ -139,5 +139,33 @@
 			"react-native-webview@14.0.1": "patches/react-native-webview@14.0.1.patch",
 			"react-native-worklets@0.13.0": "patches/react-native-worklets@0.13.0.patch"
 		}
+	},
+	"expo": {
+		"install": {
+			"exclude": [
+				"@expo/ui",
+				"@react-native-async-storage/async-storage",
+				"@types/react",
+				"expo",
+				"expo-asset",
+				"expo-constants",
+				"expo-dev-client",
+				"expo-linking",
+				"expo-router",
+				"expo-splash-screen",
+				"react",
+				"react-dom",
+				"react-native",
+				"react-native-gesture-handler",
+				"react-native-keyboard-controller",
+				"react-native-reanimated",
+				"react-native-safe-area-context",
+				"react-native-screens",
+				"react-native-svg",
+				"react-native-webview",
+				"react-native-worklets",
+				"typescript"
+			]
+		}
 	}
 }
