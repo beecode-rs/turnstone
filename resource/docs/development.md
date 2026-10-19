@@ -28,6 +28,6 @@ Expo SDK 57 on React Native 0.87 and React 19, written in TypeScript. expo-route
 
 ## Releasing
 
-Releases are tag-driven: pushing a `v*` tag runs the quality gates, then CI builds a signed Android APK and an unsigned iOS IPA (no App Store distribution — the IPA is sideloaded by whoever installs it) and publishes both to [GitHub Releases](https://github.com/beecode-rs/turnstone/releases); see [release.yml](../../.github/workflows/release.yml). The tag must match the version in both `app.json` and `package.json`. Local version-bump helpers: `pnpm release:major` / `pnpm release:minor` / `pnpm release:patch`.
+Releases are tag-driven: pushing a `v*` tag runs the quality gates, then CI builds a signed Android APK and an unsigned iOS IPA (no App Store distribution — the IPA is sideloaded by whoever installs it) and publishes both to [GitHub Releases](https://github.com/beecode-rs/turnstone/releases); see [release.yml](../../.github/workflows/release.yml). The tag must match the version in both `app.json` and `package.json`. Local version-bump helpers: `pnpm release-major` / `pnpm release-minor` / `pnpm release-patch`.
 
 How the source is layered is covered in [architecture.md](architecture.md).
