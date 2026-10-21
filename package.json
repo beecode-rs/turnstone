@@ -4,9 +4,10 @@
 	"private": true,
 	"main": "expo-router/entry",
 	"scripts": {
-		"android": "pnpm run prebuild-android && expo run:android",
-		"android-rebuild": "expo prebuild --platform android --clean --no-install && pnpm run android",
-		"android-release": "TURNSTONE_RELEASE_BUILD=1 pnpm run android --variant release",
+		"android": "expo start --android --dev-client",
+		"android-install": "adb install -r android/app/build/outputs/apk/debug/app-debug.apk",
+		"android-rebuild": "APP_VARIANT=dev expo prebuild -p android --clean && node scripts/patch-android-build.mjs",
+		"android-release": "TURNSTONE_RELEASE_BUILD=1 APP_VARIANT=dev expo run:android --variant release",
 		"bundle-check": "expo export --platform android --output-dir .bundle-check",
 		"ios": "expo run:ios",
 		"lint": "pnpm run lint:prettier && pnpm run lint:eslint && pnpm run lint:json",

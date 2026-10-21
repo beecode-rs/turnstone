@@ -148,7 +148,7 @@ adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 # live logs (crashes, console.log, Metro reloads)
 adb logcat
 
-# full build + install + launch, same as with USB plugged in
+# start Metro + open the installed dev client, same as with USB plugged in
 pnpm android
 ```
 

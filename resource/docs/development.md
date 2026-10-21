@@ -6,10 +6,10 @@ Requires [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
 git clone https://github.com/beecode-rs/turnstone.git
 cd turnstone
 pnpm install
-pnpm android
+pnpm android-rebuild && pnpm android-release
 ```
 
-`pnpm android` builds and installs the development client on a connected Android device or emulator (it appears as "Turnstone (dev)" on the device, so a development build is never confused with a release); `pnpm start` then starts the Metro dev server for it. The `start-usb` and `start-tailscale` scripts cover device packaging over USB and Tailscale (see [android-network-dev.md](../../docs/android-network-dev.md)).
+`pnpm android` and `pnpm start` start the Metro dev server and open the installed development client on a connected Android device or emulator — they never build. When the native project needs rebuilding, run `pnpm android-rebuild` (clean prebuild + patch, regenerates the android project without building) and then `pnpm android-release` (builds, installs, and launches). `pnpm android-install` re-installs the last built debug APK after an uninstall, without rebuilding. The `start-usb` and `start-tailscale` scripts cover device packaging over USB and Tailscale (see [android-network-dev.md](../../docs/android-network-dev.md)).
 
 Automated gates:
 
