@@ -5,6 +5,7 @@ import { Text } from 'react-native-paper'
 import { useThemePreference } from '#src/ui-component/theme/theme-context'
 
 const BEECODE_URL = 'https://beecode.rs'
+const GITHUB_URL = 'https://github.com/beecode-rs/turnstone'
 
 export type AboutScreenProps = {
   appName: string
@@ -16,6 +17,10 @@ export const AboutScreen = (props: AboutScreenProps): JSX.Element => {
 
   const handlePressBeecode = (): void => {
     void Linking.openURL(BEECODE_URL)
+  }
+
+  const handlePressGitHub = (): void => {
+    void Linking.openURL(GITHUB_URL)
   }
 
   return (
@@ -44,6 +49,16 @@ export const AboutScreen = (props: AboutScreenProps): JSX.Element => {
           beecode.rs
         </Text>
       </Pressable>
+      <Pressable
+        accessibilityLabel="View source on GitHub"
+        accessibilityRole="link"
+        onPress={handlePressGitHub}
+        style={styles.gitHub}
+      >
+        <Text style={[styles.gitHubText, { color: md3Theme.colors.primary }]} variant="bodyMedium">
+          GitHub
+        </Text>
+      </Pressable>
     </View>
   )
 }
@@ -54,6 +69,12 @@ const styles = StyleSheet.create({
   },
   description: {
     marginTop: 24,
+    textAlign: 'center',
+  },
+  gitHub: {
+    marginTop: 24,
+  },
+  gitHubText: {
     textAlign: 'center',
   },
   icon: {
