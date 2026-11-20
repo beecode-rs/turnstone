@@ -3,10 +3,8 @@
 ## Skills: load before writing anything
 
 - Before writing or refactoring any TypeScript in this repository, load and
-  follow the **writing-clean-ts** skill
-  (`~/.claude/skills/writing-clean-ts/SKILL.md`).
-- Before writing any test, load and follow the **contract-testing-ts** skill
-  (`~/.claude/skills/contract-testing-ts/SKILL.md`).
+  follow the **writing-clean-ts** skill.
+- Before writing any test, load and follow the **contract-testing-ts** skill.
 - Linting and formatting are done by `pnpm lint-fix`, never by hand.
 
 ## UI Conventions
