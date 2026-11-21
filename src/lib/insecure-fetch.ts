@@ -1,15 +1,15 @@
 import ReactNativeBlobUtil from 'react-native-blob-util'
 
 export const insecureFetch = {
+  isBase64FetchSupported: true,
   isCertificateBypassSupported: true,
-  async loadBase64(params: { url: string }): Promise<string> {
-    const { url } = params
-    const response = await ReactNativeBlobUtil.config({ trusty: true }).fetch('GET', url)
-    const status = response.respInfo.status
-    if (status < 200 || status >= 300) {
-      throw new Error(`Insecure fetch failed with status ${String(status)}: ${url}`)
-    }
+  async loadBase64Response(params: {
+    isTlsVerificationSkipped: boolean
+    url: string
+  }): Promise<{ base64: string; status: number }> {
+    const { isTlsVerificationSkipped, url } = params
+    const response = await ReactNativeBlobUtil.config({ trusty: isTlsVerificationSkipped }).fetch('GET', url)
 
-    return response.base64() as string
+    return { base64: response.base64() as string, status: response.respInfo.status }
   },
 }

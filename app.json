@@ -32,6 +32,7 @@
 			"./plugins/with-app-name.ts",
 			"./plugins/with-apk-name.ts",
 			"./plugins/with-build-config.ts",
+			"./plugins/with-cleartext-traffic.ts",
 			"./plugins/with-display-cutout.ts",
 			"./plugins/with-gradle-wrapper.ts",
 			"./plugins/with-proguard-optimize.ts",

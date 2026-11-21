@@ -132,6 +132,7 @@ export const FileViewer = forwardRef<FileViewerHandle, FileViewerProps>((props, 
   const [isCapStopReached, setIsCapStopReached] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [isPreviewZoomed, setIsPreviewZoomed] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [pdfPageCount, setPdfPageCount] = useState<number | null>(null)
   const [previewState, setPreviewState] = useState<FilePreviewState | null>(null)
@@ -688,6 +689,7 @@ export const FileViewer = forwardRef<FileViewerHandle, FileViewerProps>((props, 
             tintColor={colors.primary}
           />
         }
+        scrollEnabled={!isPreviewZoomed}
         scrollEventThrottle={200}
         style={styles.scroll}
       >
@@ -717,9 +719,11 @@ export const FileViewer = forwardRef<FileViewerHandle, FileViewerProps>((props, 
           previewState.kind === 'image-data' &&
           previewState.previewKind !== BinaryPreviewKindMapper.ICON && (
             <ImagePreview
+              isExpandable
               onError={() => {
                 handleImagePreviewError({ size: previewState.size })
               }}
+              onZoomChange={setIsPreviewZoomed}
               uri={binaryPreviewUtil.toDataUri({ base64: previewState.base64, mimeType: previewState.mimeType })}
             />
           )}

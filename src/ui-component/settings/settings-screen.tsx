@@ -1,8 +1,8 @@
 import { type JSX, useState } from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { SettingsTabKeyMapper } from '#src/business/enum/settings-tab-key-mapper-enum'
-import { KeyboardAvoidingArea } from '#src/ui-component/keyboard-avoiding-area'
+import { KeyboardAvoidingScrollView } from '#src/ui-component/keyboard-avoiding-scroll-view'
 import { ScrollableTabBar, type ScrollableTabBarTab } from '#src/ui-component/scrollable-tab-bar'
 import { FileNestingSettingsTab } from '#src/ui-component/settings/file-nesting-settings-tab'
 import { FileViewSettingsTab } from '#src/ui-component/settings/file-view-settings-tab'
@@ -63,11 +63,9 @@ export const SettingsScreen = (): JSX.Element => {
   return (
     <View style={[styles.screen, { backgroundColor: md3Theme.colors.background }]}>
       <ScrollableTabBar activeKey={activeTab} onSelect={handleSelectTab} tabs={SETTINGS_TABS} />
-      <KeyboardAvoidingArea style={styles.contentScroll}>
-        <ScrollView contentContainerStyle={styles.content} key={activeTab} style={styles.contentScroll}>
-          {renderActiveTab(activeTab)}
-        </ScrollView>
-      </KeyboardAvoidingArea>
+      <KeyboardAvoidingScrollView contentContainerStyle={styles.content} key={activeTab} style={styles.contentScroll}>
+        {renderActiveTab(activeTab)}
+      </KeyboardAvoidingScrollView>
     </View>
   )
 }

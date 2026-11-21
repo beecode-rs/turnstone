@@ -7,6 +7,12 @@ methods:
       - params:
           - source: "@startuml\nBob -> Alice : hello\n@enduml"
         result: SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+      - params:
+          - source: 'Bob -> Alice : hello'
+        result: SyfFKj2rKt3CoKnELR1Io4ZDoSa70000
+      - params:
+          - source: ''
+        result: 0m00
   normalizeSource:
     terms:
       - params:
@@ -21,21 +27,32 @@ methods:
       - params:
           - source: "  @startuml\nBob -> Alice : hello\n@enduml"
         result: "  @startuml\nBob -> Alice : hello\n@enduml"
+  resolveDiagramDataUri:
+    terms:
+      - params:
+          - base64: iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB
+        result: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB
+      - params:
+          - base64: PHN2Zz48L3N2Zz4=
+        result: data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=
+      - params:
+          - base64: ''
+        result: 'data:image/svg+xml;base64,'
   resolveDiagramUrl:
     terms:
       - params:
           - serverUrl: https://www.plantuml.com/plantuml
             source: "@startuml\nBob -> Alice : hello\n@enduml"
-        result: https://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+        result: https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
       - params:
           - serverUrl: https://uml.example.com/plantuml/
             source: "@startuml\nBob -> Alice : hello\n@enduml"
-        result: https://uml.example.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+        result: https://uml.example.com/plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
       - params:
           - serverUrl: https://www.plantuml.com/plantuml
             source: 'Bob -> Alice : hello'
-        result: https://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+        result: https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
       - params:
           - serverUrl: '  https://www.plantuml.com/plantuml  '
             source: 'Bob -> Alice : hello'
-        result: https://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000
+        result: https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKifpSq10000

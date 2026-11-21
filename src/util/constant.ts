@@ -129,7 +129,11 @@ export const constant = {
   plantuml: {
     alphabet: '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_',
     defaultServerUrl: 'https://www.plantuml.com/plantuml',
+    diagramCacheMaxEntries: 10,
+    pngBase64Prefix: 'iVBORw0KGgo',
+    pngDataUriPrefix: 'data:image/png;base64,',
     startRegex: /^\s*@start\w+/,
+    svgDataUriPrefix: 'data:image/svg+xml;base64,',
   },
   plantumlServer: {
     defaultPreference: {

@@ -10,27 +10,25 @@ interface MarkdownPlantumlProps {
 }
 
 export const MarkdownPlantuml = (props: MarkdownPlantumlProps): JSX.Element => {
-  const { diagramSource, isDiagramUnavailable } = usePlantumlDiagramSource({ source: props.source })
+  const { result } = usePlantumlDiagramSource({ source: props.source })
   const [isImageLoadFailed, setIsImageLoadFailed] = useState(false)
 
   useEffect(() => {
     setIsImageLoadFailed(false)
-  }, [diagramSource])
+  }, [result])
 
-  if (isDiagramUnavailable || isImageLoadFailed) {
+  if (result.kind !== 'image' || isImageLoadFailed) {
     return <>{props.fallback}</>
-  }
-  if (diagramSource === undefined) {
-    return <></>
   }
 
   return (
     <View style={styles.diagramFrame}>
       <ImagePreview
+        isExpandable
         onError={() => {
           setIsImageLoadFailed(true)
         }}
-        uri={diagramSource}
+        uri={result.source}
       />
     </View>
   )

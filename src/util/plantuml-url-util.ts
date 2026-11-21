@@ -38,11 +38,20 @@ export const plantumlUrlUtil = {
     return `@startuml\n${source}\n@enduml`
   },
 
+  resolveDiagramDataUri(params: { base64: string }): string {
+    const { base64 } = params
+    if (base64.startsWith(constant.plantuml.pngBase64Prefix)) {
+      return `${constant.plantuml.pngDataUriPrefix}${base64}`
+    }
+
+    return `${constant.plantuml.svgDataUriPrefix}${base64}`
+  },
+
   resolveDiagramUrl(params: { serverUrl: string; source: string }): string {
     const { serverUrl, source } = params
     const serverBaseUrl = serverUrl.trim().replace(/\/+$/, '')
 
-    return `${serverBaseUrl}/png/${plantumlUrlUtil.encodeSource({
+    return `${serverBaseUrl}/svg/${plantumlUrlUtil.encodeSource({
       source: plantumlUrlUtil.normalizeSource({ source }),
     })}`
   },

@@ -2,59 +2,74 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { insecureFetch } from '#src/lib/insecure-fetch'
 import { usePlantumlServer } from '#src/ui-component/plantuml/plantuml-server-context'
+import { constant } from '#src/util/constant'
 import { plantumlUrlUtil } from '#src/util/plantuml-url-util'
 
-const DIAGRAM_DATA_URI_CACHE_MAX_ENTRIES = 10
-const PLANTUML_PNG_DATA_URI_PREFIX = 'data:image/png;base64,'
+export type PlantumlDiagramResult =
+  | { kind: 'pending' }
+  | { kind: 'image'; source: string }
+  | { kind: 'invalid-source'; source: string }
+  | { kind: 'server-error' }
+  | { kind: 'unreachable' }
 
-const diagramDataUriCache = new Map<string, Promise<string | null>>()
+const diagramResultCache = new Map<string, Promise<PlantumlDiagramResult>>()
 
-const evictOldestDiagramDataUri = (): void => {
-  const oldestKey = diagramDataUriCache.keys().next().value
+const evictOldestDiagramResult = (): void => {
+  const oldestKey = diagramResultCache.keys().next().value
   if (oldestKey !== undefined) {
-    diagramDataUriCache.delete(oldestKey)
+    diagramResultCache.delete(oldestKey)
   }
 }
 
-const loadCachedDataUri = (params: { diagramUrl: string }): Promise<string | null> => {
-  const cachedDataUri = diagramDataUriCache.get(params.diagramUrl)
-  if (cachedDataUri !== undefined) {
-    return cachedDataUri
+const resolveCacheKey = (params: { diagramUrl: string; isTlsVerificationSkipped: boolean }): string => {
+  const { diagramUrl, isTlsVerificationSkipped } = params
+  if (isTlsVerificationSkipped) {
+    return `skip-tls-verify:${diagramUrl}`
   }
-  if (diagramDataUriCache.size >= DIAGRAM_DATA_URI_CACHE_MAX_ENTRIES) {
-    evictOldestDiagramDataUri()
-  }
-  const dataUri = insecureFetch
-    .loadBase64({ url: params.diagramUrl })
-    .then((base64) => {
-      return `${PLANTUML_PNG_DATA_URI_PREFIX}${base64}`
-    })
-    .catch(() => {
-      return null
-    })
-  diagramDataUriCache.set(params.diagramUrl, dataUri)
 
-  return dataUri
+  return `verify-tls:${diagramUrl}`
 }
 
-const resolveDiagramSource = (params: {
-  dataUri: string | undefined
+const resolveStatusResult = (params: { base64: string; status: number }): PlantumlDiagramResult => {
+  const { base64, status } = params
+  if (status >= 200 && status < 300) {
+    return { kind: 'image', source: plantumlUrlUtil.resolveDiagramDataUri({ base64 }) }
+  }
+  if (status === 400) {
+    return { kind: 'invalid-source', source: plantumlUrlUtil.resolveDiagramDataUri({ base64 }) }
+  }
+
+  return { kind: 'server-error' }
+}
+
+const loadCachedDiagramResult = (params: {
   diagramUrl: string
   isTlsVerificationSkipped: boolean
-}): string | undefined => {
-  if (params.isTlsVerificationSkipped) {
-    return params.dataUri
+}): Promise<PlantumlDiagramResult> => {
+  const cacheKey = resolveCacheKey(params)
+  const cachedResult = diagramResultCache.get(cacheKey)
+  if (cachedResult !== undefined) {
+    return cachedResult
   }
+  if (diagramResultCache.size >= constant.plantuml.diagramCacheMaxEntries) {
+    evictOldestDiagramResult()
+  }
+  const result = insecureFetch
+    .loadBase64Response({ isTlsVerificationSkipped: params.isTlsVerificationSkipped, url: params.diagramUrl })
+    .then((response) => {
+      return resolveStatusResult({ base64: response.base64, status: response.status })
+    })
+    .catch((): PlantumlDiagramResult => {
+      return { kind: 'unreachable' }
+    })
+  diagramResultCache.set(cacheKey, result)
 
-  return params.diagramUrl
+  return result
 }
 
-export const usePlantumlDiagramSource = (params: {
-  source: string
-}): { diagramSource: string | undefined; isDiagramUnavailable: boolean } => {
+export const usePlantumlDiagramSource = (params: { source: string }): { result: PlantumlDiagramResult } => {
   const { effectiveServerUrl, plantumlServer } = usePlantumlServer()
-  const [dataUri, setDataUri] = useState<string | undefined>(undefined)
-  const [isDiagramUnavailable, setIsDiagramUnavailable] = useState(false)
+  const [fetchedResult, setFetchedResult] = useState<PlantumlDiagramResult>({ kind: 'pending' })
 
   const diagramUrl = useMemo(() => {
     return plantumlUrlUtil.resolveDiagramUrl({ serverUrl: effectiveServerUrl, source: params.source })
@@ -65,32 +80,36 @@ export const usePlantumlDiagramSource = (params: {
     plantumlServer.isSelfSignedCertificateIgnored &&
     effectiveServerUrl.startsWith('https://') &&
     insecureFetch.isCertificateBypassSupported
+  const isDirectUrlMode = !insecureFetch.isBase64FetchSupported
 
   useEffect(() => {
-    setDataUri(undefined)
-    setIsDiagramUnavailable(false)
-    if (!isTlsVerificationSkipped) {
+    setFetchedResult({ kind: 'pending' })
+    if (isDirectUrlMode || params.source === '') {
       return undefined
     }
     const cancelState = { isCancelled: false }
-    void loadCachedDataUri({ diagramUrl }).then((nextDataUri) => {
+    void loadCachedDiagramResult({ diagramUrl, isTlsVerificationSkipped }).then((nextResult) => {
       if (cancelState.isCancelled) {
         return
       }
-      if (nextDataUri === null) {
-        setIsDiagramUnavailable(true)
-
-        return
-      }
-      setDataUri(nextDataUri)
+      setFetchedResult(nextResult)
     })
 
     return () => {
       cancelState.isCancelled = true
     }
-  }, [diagramUrl, isTlsVerificationSkipped])
+  }, [diagramUrl, isDirectUrlMode, isTlsVerificationSkipped, params.source])
 
-  const diagramSource = resolveDiagramSource({ dataUri, diagramUrl, isTlsVerificationSkipped })
+  const result = useMemo<PlantumlDiagramResult>(() => {
+    if (!isDirectUrlMode) {
+      return fetchedResult
+    }
+    if (params.source === '') {
+      return { kind: 'pending' }
+    }
 
-  return { diagramSource, isDiagramUnavailable }
+    return { kind: 'image', source: diagramUrl }
+  }, [diagramUrl, fetchedResult, isDirectUrlMode, params.source])
+
+  return { result }
 }
